@@ -77,7 +77,9 @@ public class ImportUtil {
         ImportUtil.getRequiredImports(type).forEach(name -> {
             String importClassName = MapUtil.getString(data, "className" + name);
             String importPackage = MapUtil.getString(data, "package" + name);
-            imports.add("import " + importPackage + "." + importClassName + ";");
+            if (StringUtil.isNotBlank(importPackage) && StringUtil.isNotBlank(importClassName)) {
+                imports.add("import " + importPackage + "." + importClassName + ";");
+            }
         });
 
         return imports

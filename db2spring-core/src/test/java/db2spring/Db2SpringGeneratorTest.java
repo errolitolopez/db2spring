@@ -18,10 +18,10 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Db2SpringGeneratorPropertyWebTest {
+public class Db2SpringGeneratorTest {
 
     @Test
-    void testDb2springGeneratorWeb() {
+    void testDb2springGenerator() {
         Db2springProperty property = buildProperty();
 
         Db2springGenerator db2SpringGenerator = new Db2springGenerator();
@@ -81,7 +81,7 @@ public class Db2SpringGeneratorPropertyWebTest {
                 .map(generator -> new GeneratorProperty(
                         generator,
                         true,
-                        "src/main/java",
+                        "db2spring-core/src/main/java",
                         PackageUtil.resolveDefault(generator),
                         SuffixUtil.resolveDefault(generator)
                 ))
