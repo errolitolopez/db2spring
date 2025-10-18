@@ -184,7 +184,7 @@ public class Db2springGenerator {
     private static String finalSubPackage(String fileStructure, String type, String className, String subPackage) {
         String determinedSubPackage = PackageUtil.resolveDefaultIfEmpty(subPackage, type);
         if ("layeredDto".equalsIgnoreCase(fileStructure) && Db2springConstants.ALL_DTO.contains(type)) {
-            return className.toLowerCase() + "." + determinedSubPackage;
+            return determinedSubPackage + "." + className.toLowerCase();
         } else if ("selfContained".equalsIgnoreCase(fileStructure)) {
             return className.toLowerCase() + "." + determinedSubPackage;
         } else if ("featuredGroup".equalsIgnoreCase(fileStructure)) {
