@@ -284,7 +284,7 @@ public class Db2springGenerator {
 
             if (type.equals("spec-builder")) {
                 // Exclude class name
-                className = "SpecBuilder" + suffix;
+                className = suffix;
             }
 
             // package e.g. (key=classNameDto, value=UserDto)
