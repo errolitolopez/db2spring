@@ -1,7 +1,7 @@
 package com.errol.db2spring.cli;
 
-import com.errol.db2spring.Db2springGeneratorWeb;
-import com.errol.db2spring.Db2springWebProperty;
+import com.errol.db2spring.Db2springGenerator;
+import com.errol.db2spring.Db2springProperty;
 import com.errol.db2spring.exception.Db2springException;
 import com.errol.db2spring.logger.ColoredLogger;
 import com.errol.db2spring.model.Db2springXml;
@@ -37,7 +37,7 @@ public class Db2springRunner {
             // Table mappings are already resolved by Db2springAppRunner
             List<TableMapping> resolvedTableMappings = xml.getTableMappings();
 
-            Db2springWebProperty property = new Db2springWebProperty(
+            Db2springProperty property = new Db2springProperty(
                     xml.getProjectInfo(),
                     null,
                     resolvedTableMappings,
@@ -47,8 +47,8 @@ public class Db2springRunner {
             );
 
             // 2. Execute Generation
-            Db2springGeneratorWeb db2springGeneratorWeb = new Db2springGeneratorWeb();
-            List<FileModel> files = db2springGeneratorWeb.generateJavaFiles(tables, property);
+            Db2springGenerator db2SpringGenerator = new Db2springGenerator();
+            List<FileModel> files = db2SpringGenerator.generateJavaFiles(tables, property);
 
             // 3. Write Files
             writeGeneratedFiles(files, generates);

@@ -5,7 +5,7 @@
     </root>
 
     <!-- Optional: suppress a specific logger -->
-<!--    <logger name="com.errol.db2spring.Db2springGeneratorWeb" level="ERROR"/>-->
+<!--    <logger name="com.errol.db2spring.Db2springGenerator" level="ERROR"/>-->
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

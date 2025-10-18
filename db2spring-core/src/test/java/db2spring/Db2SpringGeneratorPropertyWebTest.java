@@ -1,7 +1,7 @@
 package db2spring;
 
-import com.errol.db2spring.Db2springGeneratorWeb;
-import com.errol.db2spring.Db2springWebProperty;
+import com.errol.db2spring.Db2springGenerator;
+import com.errol.db2spring.Db2springProperty;
 import com.errol.db2spring.model.Dependency;
 import com.errol.db2spring.model.FileModel;
 import com.errol.db2spring.model.GeneratorProperty;
@@ -22,17 +22,17 @@ public class Db2SpringGeneratorPropertyWebTest {
 
     @Test
     void testDb2springGeneratorWeb() {
-        Db2springWebProperty property = buildProperty();
+        Db2springProperty property = buildProperty();
 
-        Db2springGeneratorWeb db2springGeneratorWeb = new Db2springGeneratorWeb();
+        Db2springGenerator db2SpringGenerator = new Db2springGenerator();
 
-        List<FileModel> fileModels = db2springGeneratorWeb.generateJavaFiles(getSql(), property);
+        List<FileModel> fileModels = db2SpringGenerator.generateJavaFiles(getSql(), property);
 
-        FileModel mainApplicationFile = db2springGeneratorWeb.generateMainApplicationFile(property.getProjectInfo());
+        FileModel mainApplicationFile = db2SpringGenerator.generateMainApplicationFile(property.getProjectInfo());
     }
 
-    private Db2springWebProperty buildProperty() {
-        return new Db2springWebProperty(
+    private Db2springProperty buildProperty() {
+        return new Db2springProperty(
                 new ProjectInfo("db2spring", "com.example", "db2spring", "17", "3.5.3"),
                 buildDependencies(),
                 buildTableMappings(),

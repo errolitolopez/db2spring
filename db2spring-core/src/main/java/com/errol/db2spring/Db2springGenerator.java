@@ -34,11 +34,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class Db2springGeneratorWeb {
+public class Db2springGenerator {
 
     private static final FreeMarkerWriter writer = new FreeMarkerWriter();
 
-    public List<FileModel> generate(String sql, Db2springWebProperty property) {
+    public List<FileModel> generate(String sql, Db2springProperty property) {
         if (StringUtil.isBlank(sql)) {
             log.warn("Empty SQL string provided; skipping code generation.");
             return List.of();
@@ -51,15 +51,15 @@ public class Db2springGeneratorWeb {
         return generateJavaFiles(tables, property);
     }
 
-    public List<FileModel> generateJavaFiles(String sql, Db2springWebProperty property) {
+    public List<FileModel> generateJavaFiles(String sql, Db2springProperty property) {
         return generate(sql, property);
     }
 
-    public List<FileModel> generate(List<Table> tables, Db2springWebProperty property) {
+    public List<FileModel> generate(List<Table> tables, Db2springProperty property) {
         return generateJavaFiles(tables, property);
     }
 
-    public List<FileModel> generateJavaFiles(List<Table> tables, Db2springWebProperty property) {
+    public List<FileModel> generateJavaFiles(List<Table> tables, Db2springProperty property) {
         if (CollectionUtil.isBlank(tables)) {
             log.warn("No tables parsed from SQL; nothing to generate.");
             return List.of();
@@ -174,7 +174,7 @@ public class Db2springGeneratorWeb {
         return fileModels;
     }
 
-    public List<FileModel> generateConfigurationFiles(Db2springWebProperty property) {
+    public List<FileModel> generateConfigurationFiles(Db2springProperty property) {
         List<FileModel> fileModels = new ArrayList<>();
         final ProjectInfo projectInfo = property.getProjectInfo();
 
