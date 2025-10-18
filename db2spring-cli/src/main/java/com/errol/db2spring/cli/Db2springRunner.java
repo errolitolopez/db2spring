@@ -1,0 +1,83 @@
+package com.errol.db2spring.cli;
+
+import com.errol.db2spring.Db2springGeneratorWeb;
+import com.errol.db2spring.Db2springWebProperty;
+import com.errol.db2spring.exception.Db2springException;
+import com.errol.db2spring.logger.ColoredLogger;
+import com.errol.db2spring.model.Db2springXml;
+import com.errol.db2spring.model.FileModel;
+import com.errol.db2spring.model.GeneratorProperty;
+import com.errol.db2spring.model.TableMapping;
+import com.errol.db2spring.model.table.Table;
+import com.errol.db2spring.utils.collection.CollectionUtil;
+import com.errol.db2spring.writer.Db2springFileWriter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+public class Db2springRunner {
+    private final Db2springXml xml;
+    private final List<Table> tables;
+
+    private static final Db2springFileWriter writer = new Db2springFileWriter();
+    private final GeneratorPropertyResolver propertyResolver = new GeneratorPropertyResolver();
+
+    public void run() {
+        try {
+            // 1. Resolve Generator Properties (delegated)
+            List<GeneratorProperty> resolvedGeneratorProperties = propertyResolver.resolve(xml);
+
+            List<String> generates = CollectionUtil.findValuesAsList(
+                    resolvedGeneratorProperties,
+                    GeneratorProperty::getType,
+                    GeneratorProperty::isGenerate
+            );
+
+            // Table mappings are already resolved by Db2springAppRunner
+            List<TableMapping> resolvedTableMappings = xml.getTableMappings();
+
+            Db2springWebProperty property = new Db2springWebProperty(
+                    xml.getProjectInfo(),
+                    null,
+                    resolvedTableMappings,
+                    xml.getTypeOverrides(),
+                    resolvedGeneratorProperties,
+                    xml.getPlugins()
+            );
+
+            // 2. Execute Generation
+            Db2springGeneratorWeb db2springGeneratorWeb = new Db2springGeneratorWeb();
+            List<FileModel> files = db2springGeneratorWeb.generateJavaFiles(tables, property);
+
+            // 3. Write Files
+            writeGeneratedFiles(files, generates);
+
+        } catch (Exception e) {
+            throw new Db2springException("Failed to run generator", e);
+        }
+    }
+
+    private void writeGeneratedFiles(List<FileModel> files, List<String> generates) {
+        for (FileModel file : files) {
+            // Only write files that are marked for generation
+            if (!generates.contains(file.getType())) continue;
+
+            writer.writeFile(
+                    file.getOutputDir(),
+                    file.getPackageName(),
+                    file.getFilename(),
+                    file.getContent()
+            );
+
+            ColoredLogger.info(String.format("Generated: %s/%s/%s.%s",
+                            file.getOutputDir(),
+                            file.getPackageName().replace('.', '/'),
+                            file.getFilename(),
+                            file.getFileExtension()))
+                    .color(ColoredLogger.BLUE)
+                    .withoutDashes()
+                    .log();
+        }
+    }
+}

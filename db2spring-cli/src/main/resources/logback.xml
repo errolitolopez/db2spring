@@ -1,0 +1,15 @@
+<configuration>
+    <!-- Set default log level to INFO or higher -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- Optional: suppress a specific logger -->
+<!--    <logger name="com.errol.db2spring.Db2springGeneratorWeb" level="ERROR"/>-->
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+</configuration>

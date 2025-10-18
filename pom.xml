@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ===================================================== -->
+    <!-- Root / Parent POM for JitPack publishing -->
+    <!-- ===================================================== -->
+    <groupId>com.github.errolitolopez</groupId>
+    <artifactId>db2spring</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>db2spring</name>
+    <description>Database to Spring Code Generator</description>
+    <url>https://github.com/errolitolopez/db2spring</url>
+
+    <!-- ===================================================== -->
+    <!-- Modules -->
+    <!-- ===================================================== -->
+    <modules>
+        <module>db2spring-commons</module>
+        <module>db2spring-core</module>
+        <module>db2spring-cli</module>
+    </modules>
+
+    <!-- ===================================================== -->
+    <!-- Common Properties -->
+    <!-- ===================================================== -->
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Versions -->
+        <lombok.version>1.18.30</lombok.version>
+        <freemarker.version>2.3.32</freemarker.version>
+    </properties>
+
+    <!-- ===================================================== -->
+    <!-- Dependency Management -->
+    <!-- ===================================================== -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Freemarker -->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- ===================================================== -->
+    <!-- Build configuration -->
+    <!-- ===================================================== -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Compiler plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+
+                <!-- Shade plugin (optional, used by db2spring-generatorProperty CLI JAR) -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.5.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <!-- ===================================================== -->
+    <!-- SCM (helps JitPack resolve the Git repo) -->
+    <!-- ===================================================== -->
+    <scm>
+        <connection>scm:git:git://github.com/errolitolopez/db2spring.git</connection>
+        <developerConnection>scm:git:ssh://github.com/errolitolopez/db2spring.git</developerConnection>
+        <url>https://github.com/errolitolopez/db2spring</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- ===================================================== -->
+    <!-- Distribution Management (JitPack doesn't require this) -->
+    <!-- ===================================================== -->
+</project>
