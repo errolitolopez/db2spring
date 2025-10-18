@@ -102,7 +102,7 @@ public class Db2SpringGeneratorPropertyWebTest {
     private static List<TypeOverride> buildTypeOverrides() {
         List<TypeOverride> typeOverrides = new ArrayList<>();
 
-        TypeOverride dateTimeToInstant = new TypeOverride("TIMESTAMP", "Instant");
+        TypeOverride dateTimeToInstant = new TypeOverride(null, "TIMESTAMP", "Instant");
 
         typeOverrides.add(dateTimeToInstant);
         return typeOverrides;

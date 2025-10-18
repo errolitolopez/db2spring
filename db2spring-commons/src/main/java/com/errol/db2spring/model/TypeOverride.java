@@ -5,15 +5,10 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-@AllArgsConstructor
 @ToString
+@AllArgsConstructor
 public class TypeOverride {
     private String columnName;
-    private final String sqlType;
-    private final String javaType;
-
-    public TypeOverride(String sqlType, String javaType) {
-        this.sqlType = sqlType;
-        this.javaType = javaType;
-    }
+    private String sqlType;
+    private String javaType;
 }
