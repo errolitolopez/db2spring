@@ -122,6 +122,12 @@ public class Db2springGenerator {
                 String packageName = data.get("package" + typePascal).toString();
                 String filename = data.get("className" + typePascal).toString();
 
+                GeneratorProperty generatorProperty = GeneratorPropertyUtil
+                        .findBy(generatorProperties, GeneratorProperty::getType, type)
+                        .get();
+
+                String subPackage = PackageUtil.resolveDefaultIfEmpty(generatorProperty.getSubPackage(), type);
+
                 String outputDir = CollectionUtil.findFirstAndMap(
                         generatorProperties,
                         GeneratorProperty::getOutputDir,
@@ -134,41 +140,41 @@ public class Db2springGenerator {
                         .noneMatch(plugin -> "Mapstruct".equals(plugin.getPluginName()));
 
                 boolean mapStructAbsent = CollectionUtil
-                        .noneMatch(property.getPlugins(), plugin -> plugin.getPluginName().equals("Mapstruct"));
+                        .noneMatch(property.getPlugins(), p -> p.getPluginName().equals("Mapstruct"));
 
                 if (type.equals("mapper") && mapStructAbsent) {
-                    fileModels.add(new FileModel(
-                            type,
-                            className,
-                            outputDir,
-                            packageName,
-                            filename,
-                            "java",
-                            writer.writeContent(data, "custom-mapper")
-                    ));
+                    fileModels.add(new FileModel()
+                            .setType(type)
+                            .setGroup(className)
+                            .setOutputDir(outputDir)
+                            .setRootPackage(rootPackage)
+                            .setSubPackage(subPackage)
+                            .setFilename(filename)
+                            .setFileExtension("java")
+                            .setContent(writer.writeContent(data, "custom-mapper")));
 
-                    fileModels.add(new FileModel(
-                            type,
-                            className,
-                            outputDir,
-                            packageName,
-                            filename + "Impl",
-                            "java",
-                            writer.writeContent(data, "custom-mapper-impl")
-                    ));
+                    fileModels.add(new FileModel()
+                            .setType(type)
+                            .setGroup(className)
+                            .setOutputDir(outputDir)
+                            .setRootPackage(rootPackage)
+                            .setSubPackage(subPackage)
+                            .setFilename(filename + "Impl")
+                            .setFileExtension("java")
+                            .setContent(writer.writeContent(data, "custom-mapper-impl")));
 
                     continue;
                 }
 
-                fileModels.add(new FileModel(
-                        type,
-                        type.equals("spec-builder") ? null : className,
-                        outputDir,
-                        packageName,
-                        filename,
-                        "java",
-                        writer.writeContent(data, type)
-                ));
+                fileModels.add(new FileModel()
+                        .setType(type)
+                        .setGroup(type.equals("spec-builder") ? null : className)
+                        .setOutputDir(outputDir)
+                        .setRootPackage(rootPackage)
+                        .setSubPackage(subPackage)
+                        .setFilename(filename)
+                        .setFileExtension("java")
+                        .setContent(writer.writeContent(data, type)));
             }
         }
         return fileModels;
@@ -178,43 +184,44 @@ public class Db2springGenerator {
         List<FileModel> fileModels = new ArrayList<>();
         final ProjectInfo projectInfo = property.getProjectInfo();
 
-        String propsContent = writer.writeContent(
-                Map.of("projectName", SmartStringUtil.toKebabCase(ProjectInfoUtil.getProjectName(projectInfo))),
-                "application-properties"
-        );
-        FileModel appPropsFile = new FileModel(null, null, "src/main/resources", null, "application", "properties", propsContent);
+        String projectName = SmartStringUtil.toKebabCase(ProjectInfoUtil.getProjectName(projectInfo));
+        Map<String, Object> appPropsData = Map.of("projectName", projectName);
 
-        String gitIgnoreContent = writer.writeContent(Map.of(), "git-ignore");
-        FileModel gitIgnoreFile = new FileModel(null, null, null, null, null, "git-ignore", gitIgnoreContent);
-
-        Map<String, Object> data = new HashMap<>(Map.of(
+        Map<String, Object> pomData = new HashMap<>(Map.of(
                 "dependencies", property.getDependencies(),
                 "projectInfo", projectInfo
         ));
-        applyPluginData(property.getPlugins(), data);
+        applyPluginData(property.getPlugins(), pomData);
 
-        FileModel pomFile = new FileModel(null, null, null, null, "pom", "xml", writer.writeContent(data, "pom"));
+        return List.of(
+                new FileModel()
+                        .setOutputDir("src/main/resources")
+                        .setFilename("application")
+                        .setFileExtension("properties")
+                        .setContent(writer.writeContent(appPropsData, "application-properties")),
 
-        return List.of(gitIgnoreFile, appPropsFile, pomFile);
+                new FileModel()
+                        .setFileExtension("git-ignore")
+                        .setContent(writer.writeContent(Map.of(), "git-ignore")),
+
+                new FileModel()
+                        .setFilename("pom")
+                        .setFileExtension("xml")
+                        .setContent(writer.writeContent(pomData, "pom"))
+        );
     }
 
     public FileModel generateMainApplicationFile(ProjectInfo projectInfo) {
         String rootPackage = ProjectInfoUtil.getRootPackage(projectInfo);
         String className = SmartStringUtil.toPascalCase(ProjectInfoUtil.getProjectName(projectInfo) + "Application");
-        return new FileModel(
-                null,
-                null,
-                "src/main/java",
-                rootPackage,
-                className,
-                "java",
-                writer.writeContent(
-                        Map.of(
-                                "rootPackage", rootPackage,
-                                "className", className
-                        ),
-                        "main"
-                ));
+        Map<String, Object> data = Map.of("rootPackage", rootPackage, "className", className);
+
+        return new FileModel()
+                .setOutputDir("src/main/java")
+                .setRootPackage(rootPackage)
+                .setFilename(className)
+                .setFileExtension("java")
+                .setContent(writer.writeContent(data, "main"));
     }
 
     private static void applyClassImportData(String type, Map<String, Object> data) {

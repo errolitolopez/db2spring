@@ -63,18 +63,9 @@ public class Db2springRunner {
             // Only write files that are marked for generation
             if (!generates.contains(file.getType())) continue;
 
-            writer.writeFile(
-                    file.getOutputDir(),
-                    file.getPackageName(),
-                    file.getFilename(),
-                    file.getContent()
-            );
+            writer.writeFile(file.getFullPath(), file.getContent());
 
-            ColoredLogger.info(String.format("Generated: %s/%s/%s.%s",
-                            file.getOutputDir(),
-                            file.getPackageName().replace('.', '/'),
-                            file.getFilename(),
-                            file.getFileExtension()))
+            ColoredLogger.info(String.format("Generated: %s", file.getFullPath()))
                     .color(ColoredLogger.BLUE)
                     .withoutDashes()
                     .log();
