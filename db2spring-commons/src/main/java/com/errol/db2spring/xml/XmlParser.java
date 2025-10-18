@@ -33,12 +33,10 @@ public class XmlParser {
     public static ProjectInfo parseProjectInfo(Document document) {
         Element element = (Element) document.getElementsByTagName("project-info").item(0);
 
-        return new ProjectInfo(XmlUtil.getText(element, "project-name"),
-                XmlUtil.getText(element, "group-id"),
-                XmlUtil.getText(element, "artifact-id"),
-                null,
-                null
-        );
+        return new ProjectInfo()
+                .setProjectName(XmlUtil.getText(element, "project-name"))
+                .setGroupId(XmlUtil.getText(element, "group-id"))
+                .setArtifactId(XmlUtil.getText(element, "artifact-id"));
     }
 
     public static List<TableMapping> parseTableMappings(Document document) {

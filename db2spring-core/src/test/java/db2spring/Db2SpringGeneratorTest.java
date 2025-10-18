@@ -33,7 +33,13 @@ public class Db2SpringGeneratorTest {
 
     private Db2springProperty buildProperty() {
         return new Db2springProperty(
-                new ProjectInfo("db2spring", "com.example", "db2spring", "17", "3.5.3"),
+                new ProjectInfo()
+                        .setProjectName("db2spring")
+                        .setGroupId("com.example")
+                        .setArtifactId("db2spring")
+                        .setJavaVersion("17")
+                        .setSpringBootVersion("3.5.3")
+                        .setFileStructure("featuredGroup"),
                 buildDependencies(),
                 buildTableMappings(),
                 buildTypeOverrides(),

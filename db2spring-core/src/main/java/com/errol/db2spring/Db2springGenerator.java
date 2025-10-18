@@ -1,5 +1,6 @@
 package com.errol.db2spring;
 
+import com.errol.db2spring.contants.Db2springConstants;
 import com.errol.db2spring.context.NamingDataContext;
 import com.errol.db2spring.context.TableDataContext;
 import com.errol.db2spring.exception.Db2springException;
@@ -15,7 +16,6 @@ import com.errol.db2spring.sql.SqlParser;
 import com.errol.db2spring.utils.SmartStringUtil;
 import com.errol.db2spring.utils.StringUtil;
 import com.errol.db2spring.utils.codegen.ColumnUtil;
-import com.errol.db2spring.utils.codegen.GeneratorPropertyUtil;
 import com.errol.db2spring.utils.codegen.ImportUtil;
 import com.errol.db2spring.utils.codegen.PackageUtil;
 import com.errol.db2spring.utils.codegen.ProjectInfoUtil;
@@ -122,11 +122,12 @@ public class Db2springGenerator {
                 String packageName = data.get("package" + typePascal).toString();
                 String filename = data.get("className" + typePascal).toString();
 
-                GeneratorProperty generatorProperty = GeneratorPropertyUtil
-                        .findBy(generatorProperties, GeneratorProperty::getType, type)
+                //noinspection OptionalGetWithoutIsPresent
+                GeneratorProperty generatorProperty = CollectionUtil
+                        .findFirst(generatorProperties, g -> g.getType().equals(type))
                         .get();
 
-                String subPackage = PackageUtil.resolveDefaultIfEmpty(generatorProperty.getSubPackage(), type);
+                final String subPackage = finalSubPackage(projectInfo.getFileStructure(), type, className, generatorProperty.getSubPackage());
 
                 String outputDir = CollectionUtil.findFirstAndMap(
                         generatorProperties,
@@ -178,6 +179,24 @@ public class Db2springGenerator {
             }
         }
         return fileModels;
+    }
+
+    private static String finalSubPackage(String fileStructure, String type, String className, String subPackage) {
+        String determinedSubPackage = PackageUtil.resolveDefaultIfEmpty(subPackage, type);
+        if ("layeredDto".equalsIgnoreCase(fileStructure) && Db2springConstants.ALL_DTO.contains(type)) {
+            return className.toLowerCase() + "." + determinedSubPackage;
+        } else if ("selfContained".equalsIgnoreCase(fileStructure)) {
+            return className.toLowerCase() + "." + determinedSubPackage;
+        } else if ("featuredGroup".equalsIgnoreCase(fileStructure)) {
+            if ("service-impl".equals(type)) {
+                String[] parts = determinedSubPackage.split("\\.");
+                if (parts.length >= 2) {
+                    return parts[0] + "." + className.toLowerCase() + "." + parts[1];
+                }
+            }
+            return determinedSubPackage + "." + className.toLowerCase();
+        }
+        return determinedSubPackage;
     }
 
     public List<FileModel> generateConfigurationFiles(Db2springProperty property) {
@@ -273,8 +292,8 @@ public class Db2springGenerator {
     private static void applyNamingData(Map<String, Object> data, NamingDataContext context) {
         context.generators().forEach(type -> {
             //noinspection OptionalGetWithoutIsPresent
-            GeneratorProperty generatorProperty = GeneratorPropertyUtil
-                    .findBy(context.generatorPropertyProperties(), GeneratorProperty::getType, type)
+            GeneratorProperty generatorProperty = CollectionUtil
+                    .findFirst(context.generatorPropertyProperties(), g -> g.getType().equals(type))
                     .get();
 
             final String typPascal = SmartStringUtil.toPascalCase(type);

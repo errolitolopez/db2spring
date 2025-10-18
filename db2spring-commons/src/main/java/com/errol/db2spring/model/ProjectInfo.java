@@ -4,16 +4,19 @@ import com.errol.db2spring.utils.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Accessors(chain = true)
 public class ProjectInfo {
     private String projectName;
     private String groupId;
     private String artifactId;
     private String javaVersion;
     private String springBootVersion;
+    private String fileStructure;
 
     public String getGroupId() {
         String id = StringUtil.isNotBlank(groupId) ? groupId : "com.example";
@@ -62,5 +65,12 @@ public class ProjectInfo {
         id = id.replace(" ", "-");
         id = id.replaceAll("[^a-zA-Z0-9.-]", "");
         return id;
+    }
+
+    public String getFileStructure() {
+        if (StringUtil.isBlank(fileStructure)) {
+            return "layered";
+        }
+        return fileStructure;
     }
 }
