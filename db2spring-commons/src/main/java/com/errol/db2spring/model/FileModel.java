@@ -31,9 +31,10 @@ public class FileModel {
 
     public String getFullPath() {
         if (outputDir == null) return null;
-        String packagePath = getFullyQualifiedPackage() != null
-                ? getFullyQualifiedPackage().replace('.', '/')
-                : "";
-        return outputDir + "/" + packagePath + "/" + filename + "." + fileExtension;
+
+        String javaPath = getFullyQualifiedPackage();
+        String path = (javaPath != null) ? javaPath.replace('.', '/') + "/" : "";
+
+        return outputDir + "/" + path + filename + "." + fileExtension;
     }
 }
