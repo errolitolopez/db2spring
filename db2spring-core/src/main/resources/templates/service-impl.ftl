@@ -1,13 +1,10 @@
 package ${packageServiceImpl};
 
-<#if pluginSpecBuilder??>
-import ${projectInfo.fullyQualifiedPackage}.${pluginSpecBuilder.packageName}.${pluginSpecBuilder.className};
-</#if>
 ${classImports}
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-<#if pluginSpecBuilder??>
+<#if classNameSpecBuilder??>
 import org.springframework.data.jpa.domain.Specification;
 </#if>
 import org.springframework.stereotype.Service;
