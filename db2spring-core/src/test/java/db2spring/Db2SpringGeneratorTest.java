@@ -27,8 +27,11 @@ public class Db2SpringGeneratorTest {
         Db2springGenerator db2SpringGenerator = new Db2springGenerator();
 
         List<FileModel> fileModels = db2SpringGenerator.generateJavaFiles(getSql(), property);
-
-        FileModel mainApplicationFile = db2SpringGenerator.generateMainApplicationFile(property.getProjectInfo());
+        fileModels.add(db2SpringGenerator.generateMainApplicationFile(property.getProjectInfo()));
+        fileModels.addAll(db2SpringGenerator.generateConfigurationFiles(property));
+        for (FileModel fileModel : fileModels) {
+            System.out.println(fileModel.getFilename()  + " = " + fileModel.getFullPath());
+        }
     }
 
     private Db2springProperty buildProperty() {

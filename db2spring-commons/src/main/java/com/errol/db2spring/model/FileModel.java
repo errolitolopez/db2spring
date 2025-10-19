@@ -30,10 +30,12 @@ public class FileModel {
     }
 
     public String getFullPath() {
-        if (outputDir == null) return null;
-        String packagePath = getFullyQualifiedPackage() != null
-                ? getFullyQualifiedPackage().replace('.', '/')
-                : "";
-        return outputDir + "/" + packagePath + "/" + filename + "." + fileExtension;
+        String javaPath = getFullyQualifiedPackage();
+        String path = (javaPath != null && !javaPath.isEmpty()) ? javaPath.replace('.', '/') + "/" : "";
+        String prefix = (outputDir != null && !outputDir.isEmpty()) ? outputDir + "/" : "";
+        String name = (filename != null) ? filename : "";
+        String ext = (fileExtension != null && !fileExtension.isEmpty()) ? "." + fileExtension : "";
+
+        return prefix + path + name + ext;
     }
 }
