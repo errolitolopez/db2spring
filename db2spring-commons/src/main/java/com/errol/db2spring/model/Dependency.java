@@ -1,22 +1,18 @@
 package com.errol.db2spring.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
-@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
 public class Dependency {
-    private final String groupId;
-    private final String artifactId;
-    private final String version;
-    private final boolean versionRequired;
-    private final String scope;
-
-    public Dependency(String groupId, String artifactId, String version) {
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.version = version;
-        this.versionRequired = true;
-        this.scope = null;
-    }
+    private String groupId;
+    private String artifactId;
+    private String version;
+    private boolean versionRequired = true;
+    private String scope;
 }

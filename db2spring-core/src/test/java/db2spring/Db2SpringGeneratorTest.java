@@ -29,9 +29,6 @@ public class Db2SpringGeneratorTest {
         List<FileModel> fileModels = db2SpringGenerator.generateJavaFiles(getSql(), property);
         fileModels.add(db2SpringGenerator.generateMainApplicationFile(property.getProjectInfo()));
         fileModels.addAll(db2SpringGenerator.generateConfigurationFiles(property));
-        for (FileModel fileModel : fileModels) {
-            System.out.println(fileModel.getFilename()  + " = " + fileModel.getFullPath());
-        }
     }
 
     private Db2springProperty buildProperty() {
@@ -121,9 +118,21 @@ public class Db2SpringGeneratorTest {
     private static List<Dependency> buildDependencies() {
         List<Dependency> dependencies = new ArrayList<>();
 
-        Dependency springValidationDependency = new Dependency("org.springframework.boot", "spring-boot-starter-validation", "3.3.5");
-        Dependency lombokDependency = new Dependency("org.projectlombok", "lombok", "1.18.34");
-        Dependency mapstructDependency = new Dependency("org.mapstruct", "mapstruct", "1.6.3");
+        Dependency springValidationDependency = new Dependency()
+                .setGroupId("org.springframework.boot")
+                .setArtifactId("spring-boot-starter-validation")
+                .setVersion("3.3.5")
+                .setVersionRequired(false);
+
+        Dependency lombokDependency = new Dependency()
+                .setGroupId("org.projectlombok")
+                .setArtifactId("lombok")
+                .setVersion("1.18.34");
+
+        Dependency mapstructDependency = new Dependency()
+                .setGroupId("org.mapstruct")
+                .setArtifactId("mapstruct")
+                .setVersion("1.6.3");
 
         dependencies.add(springValidationDependency);
         dependencies.add(lombokDependency);
