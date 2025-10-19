@@ -5,47 +5,19 @@
         <user>root</user>
         <password>123qwe</password>
         <driver-class>com.mysql.cj.jdbc.Driver</driver-class>
-        <driver-jar>db2spring-cli/lib/mysql-connector-j-8.0.33.jar</driver-jar>
+        <driver-jar>db2spring-generator/lib/mysql-connector-j-8.0.33.jar</driver-jar>
     </database-connection>
 
-     <sql-file src="db2spring-cli/lib/ddl.sql"/>
-<!--     <sql>-->
-<!--         CREATE TABLE users (-->
-<!--         user_id BIGINT PRIMARY KEY,-->
-<!--         username VARCHAR(50) NOT NULL UNIQUE,-->
-<!--         email VARCHAR(100) NOT NULL UNIQUE,-->
-<!--         password_hash VARCHAR(255) NOT NULL,-->
-<!--         display_name VARCHAR(100),-->
-<!--         bio TEXT,-->
-<!--         profile_picture_url VARCHAR(255),-->
-<!--         is_active BOOLEAN DEFAULT TRUE,-->
-<!--         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,-->
-<!--         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,-->
-<!--         created_by BIGINT,-->
-<!--         updated_by BIGINT-->
-<!--         );-->
-
-<!--         CREATE TABLE user_settings (-->
-<!--         setting_id BIGINT PRIMARY KEY,-->
-<!--         user_id BIGINT NOT NULL,-->
-<!--         privacy_level VARCHAR(20) DEFAULT 'public',-->
-<!--         email_notifications BOOLEAN DEFAULT TRUE,-->
-<!--         push_notifications BOOLEAN DEFAULT TRUE,-->
-<!--         theme VARCHAR(20) DEFAULT 'light',-->
-<!--         language VARCHAR(10) DEFAULT 'en',-->
-<!--         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,-->
-<!--         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,-->
-<!--         created_by BIGINT,-->
-<!--         updated_by BIGINT,-->
-<!--         FOREIGN KEY (user_id) REFERENCES users(user_id)-->
-<!--         );-->
-<!--     </sql>-->
+<!--     <sql-file src="db2spring-generator/lib/ddl.sql"/>-->
+<!--     <sql></sql>-->
 
     <project-info>
         <group-id>com.example</group-id>
         <artifact-id>db2spring</artifact-id>
         <project-name>db2spring</project-name>
     </project-info>
+
+    <file-structure>layeredDto</file-structure>
 
     <plugin name="SpringBootStarterValidation"/>
     <plugin name="Lombok"/>

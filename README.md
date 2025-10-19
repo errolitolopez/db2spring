@@ -49,14 +49,15 @@ The CLI tool requires an XML configuration file to define the project structure,
 
 A typical configuration file, like the example provided, includes the following sections:
 
-| XML Tag | Purpose |
-| :--- | :--- |
-| `<database-connection>` | JDBC URL, username, password, and driver information. |
-| `<sql-file>` or `<sql>` | Specifies the source of table metadata (either a path to a DDL file or inline SQL). |
-| `<project-info>` | Defines the base Maven coordinates (`group-id`, `artifact-id`) and the project's root package. |
-| `<plugin>` | Enables features like **Lombok**, **Mapstruct**, and **SpringBootStarterValidation**. |
-| `<table-mapping>` | Maps a database table name to the desired generated Java class name. |
-| `<generator>` | Fine-tunes the output for specific file types (e.g., `type="controller"`, `generate="true"` or `generate="false"`). |
+| XML Tag                 | Purpose                                                                                                             |
+|:------------------------|:--------------------------------------------------------------------------------------------------------------------|
+| `<database-connection>` | JDBC URL, username, password, and driver information.                                                               |
+| `<sql-file>` or `<sql>` | Specifies the source of table metadata (either a path to a DDL file or inline SQL).                                 |
+| `<project-info>`        | Defines the base Maven coordinates (`group-id`, `artifact-id`) and the project's root package.                      |
+| `<plugin>`              | Enables features like **Lombok**, **Mapstruct**, and **SpringBootStarterValidation**.                               |
+| `<table-mapping>`       | Maps a database table name to the desired generated Java class name.                                                |
+| `<generator>`           | Fine-tunes the output for specific file types (e.g., `type="controller"`, `generate="true"` or `generate="false"`). |
+| `<file-structure>`      | Choose the output file and folder layout (e.g., `layered`, `layeredDto`, `selfContained` or `featuredGroup`).       |
 
 ### 3\. Run the Generator
 

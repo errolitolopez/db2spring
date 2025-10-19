@@ -36,7 +36,8 @@ public class XmlParser {
         return new ProjectInfo()
                 .setProjectName(XmlUtil.getText(element, "project-name"))
                 .setGroupId(XmlUtil.getText(element, "group-id"))
-                .setArtifactId(XmlUtil.getText(element, "artifact-id"));
+                .setArtifactId(XmlUtil.getText(element, "artifact-id"))
+                .setFileStructure(parseFileStructure(document));
     }
 
     public static List<TableMapping> parseTableMappings(Document document) {
@@ -84,14 +85,8 @@ public class XmlParser {
     }
 
     public static SqlOption parseSqlOption(Document doc) {
-        if (doc == null) {
-            return null;
-        }
-
-        Element root = doc.getDocumentElement();
-        if (root == null) {
-            return null;
-        }
+        Element root = getRootElement(doc);
+        if (root == null) return null;
 
         String sqlStatement = XmlUtil.getText(root, "sql");
         String src = XmlUtil.getAttribute(doc, "sql-file", "src");
@@ -101,5 +96,18 @@ public class XmlParser {
         }
 
         return null;
+    }
+
+    private static String parseFileStructure(Document doc) {
+        Element root = getRootElement(doc);
+        if (root == null) return null;
+        return XmlUtil.getText(root, "file-structure");
+    }
+
+    private static Element getRootElement(Document doc) {
+        if (doc == null) {
+            return null;
+        }
+        return doc.getDocumentElement();
     }
 }
