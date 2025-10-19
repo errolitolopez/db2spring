@@ -230,7 +230,7 @@ public class Db2springGenerator {
                         .setContent(writer.writeContent(appPropsData, "application-properties")),
 
                 new FileModel()
-                        .setFileExtension("git-ignore")
+                        .setFileExtension("gitignore")
                         .setContent(writer.writeContent(Map.of(), "git-ignore")),
 
                 new FileModel()
