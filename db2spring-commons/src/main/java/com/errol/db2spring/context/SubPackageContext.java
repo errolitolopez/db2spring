@@ -1,21 +1,17 @@
 package com.errol.db2spring.context;
 
-import com.errol.db2spring.model.GeneratorProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class NamingDataContext {
+public class SubPackageContext {
     private String fileStructure;
+    private String type;
     private String className;
-    private String rootPackage;
-    private List<String> generators;
-    private List<GeneratorProperty> generatorProperties;
+    private String subPackage;
 }

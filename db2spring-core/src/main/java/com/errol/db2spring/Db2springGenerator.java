@@ -2,6 +2,7 @@ package com.errol.db2spring;
 
 import com.errol.db2spring.contants.Db2springConstants;
 import com.errol.db2spring.context.NamingDataContext;
+import com.errol.db2spring.context.SubPackageContext;
 import com.errol.db2spring.context.TableDataContext;
 import com.errol.db2spring.exception.Db2springException;
 import com.errol.db2spring.model.FileModel;
@@ -105,9 +106,16 @@ public class Db2springGenerator {
             data.put("tableName", new SmartString(tableName));
             data.put("className", new SmartString(className));
 
-            applyTableData(data, new TableDataContext(tableName, List.of(table), property.getTypeOverrides()));
-            applyNamingData(data, new NamingDataContext(className, rootPackage, generators, generatorProperties));
+            applyTableData(data, new TableDataContext(tableName, table, property.getTypeOverrides()));
             applyPluginData(property.getPlugins(), data);
+
+            NamingDataContext namingContext = new NamingDataContext()
+                    .setFileStructure(projectInfo.getFileStructure())
+                    .setClassName(className)
+                    .setRootPackage(rootPackage)
+                    .setGenerators(generators)
+                    .setGeneratorProperties(generatorProperties);
+            applyNamingData(data, namingContext);
 
             for (String type : generators) {
                 applyClassImportData(type, data);
@@ -119,15 +127,8 @@ public class Db2springGenerator {
                 if (type.equals("spec-builder")) isSpecBuilderGenerated = true;
 
                 String typePascal = SmartStringUtil.toPascalCase(type);
-                String packageName = data.get("package" + typePascal).toString();
+                String subPackage = data.get("subPackage" + typePascal).toString();
                 String filename = data.get("className" + typePascal).toString();
-
-                //noinspection OptionalGetWithoutIsPresent
-                GeneratorProperty generatorProperty = CollectionUtil
-                        .findFirst(generatorProperties, g -> g.getType().equals(type))
-                        .get();
-
-                final String subPackage = finalSubPackage(projectInfo.getFileStructure(), type, className, generatorProperty.getSubPackage());
 
                 String outputDir = CollectionUtil.findFirstAndMap(
                         generatorProperties,
@@ -181,22 +182,31 @@ public class Db2springGenerator {
         return fileModels;
     }
 
-    private static String finalSubPackage(String fileStructure, String type, String className, String subPackage) {
-        String determinedSubPackage = PackageUtil.resolveDefaultIfEmpty(subPackage, type);
+    private static String resolveSubPackage(SubPackageContext context) {
+        String fileStructure = context.getFileStructure();
+        String type = context.getType();
+        String className = context.getClassName();
+
+        String subPackage = context.getSubPackage();
+
         if ("layeredDto".equalsIgnoreCase(fileStructure) && Db2springConstants.ALL_DTO.contains(type)) {
-            return determinedSubPackage + "." + className.toLowerCase();
-        } else if ("selfContained".equalsIgnoreCase(fileStructure)) {
-            return className.toLowerCase() + "." + determinedSubPackage;
-        } else if ("featuredGroup".equalsIgnoreCase(fileStructure)) {
+            return subPackage + "." + className.toLowerCase();
+        }
+
+        if ("selfContained".equalsIgnoreCase(fileStructure)) {
+            return className.toLowerCase() + "." + subPackage;
+        }
+
+        if ("featuredGroup".equalsIgnoreCase(fileStructure)) {
             if ("service-impl".equals(type)) {
-                String[] parts = determinedSubPackage.split("\\.");
+                String[] parts = subPackage.split("\\.");
                 if (parts.length >= 2) {
                     return parts[0] + "." + className.toLowerCase() + "." + parts[1];
                 }
             }
-            return determinedSubPackage + "." + className.toLowerCase();
+            return subPackage + "." + className.toLowerCase();
         }
-        return determinedSubPackage;
+        return subPackage;
     }
 
     public List<FileModel> generateConfigurationFiles(Db2springProperty property) {
@@ -253,22 +263,15 @@ public class Db2springGenerator {
     }
 
     private static void applyTableData(Map<String, Object> data, TableDataContext context) {
-        Map<String, Table> tableMap = MapUtil.toMap(context.tables(), Table::getTableName);
-
-        if (CollectionUtil.isEmpty(tableMap)) {
-            log.warn("No tables found in context for table data application.");
-            return;
-        }
-
-        Table table = tableMap.get(context.tableName());
+        Table table = context.getTable();
         if (Objects.isNull(table)) {
-            log.warn("Table {} not found in table map.", context.tableName());
+            log.warn("Table {} not found in table map.", context.getTableName());
             return;
         }
 
-        data.put("tableName", new SmartString(context.tableName()));
+        data.put("tableName", new SmartString(context.getTableName()));
 
-        List<Column> columns = ColumnUtil.resolvedColumns(table.getColumns(), context.typeOverrides());
+        List<Column> columns = ColumnUtil.resolvedColumns(table.getColumns(), context.getTypeOverrides());
         data.put("columns", columns);
 
         Column idColumn = CollectionUtil.findFirst(columns, Column::isPrimaryKey)
@@ -290,34 +293,46 @@ public class Db2springGenerator {
     }
 
     private static void applyNamingData(Map<String, Object> data, NamingDataContext context) {
-        context.generators().forEach(type -> {
+        context.getGenerators().forEach(type -> {
             //noinspection OptionalGetWithoutIsPresent
             GeneratorProperty generatorProperty = CollectionUtil
-                    .findFirst(context.generatorPropertyProperties(), g -> g.getType().equals(type))
+                    .findFirst(context.getGeneratorProperties(), g -> g.getType().equals(type))
                     .get();
 
-            final String typPascal = SmartStringUtil.toPascalCase(type);
+            final String typePascal = SmartStringUtil.toPascalCase(type);
+
+            String subPackage =  PackageUtil.resolveDefaultIfEmpty(generatorProperty.getSubPackage(), type);
+
+            if (!type.equals("spec-builder")) {
+                SubPackageContext subPackageContext = new SubPackageContext()
+                        .setFileStructure(context.getFileStructure())
+                        .setType(type)
+                        .setClassName(context.getClassName()) // Unmodified class name
+                        .setSubPackage(subPackage);
+
+                subPackage = resolveSubPackage(subPackageContext);
+            }
 
             // package e.g. (key=packageDto, value=com.example.demo.dto)
-            String rootPackage = context.rootPackage();
-            String subPackage = PackageUtil.resolveDefaultIfEmpty(generatorProperty.getSubPackage(), type);
-
-            data.put("package" + typPascal, rootPackage + "." + subPackage);
+            data.putIfAbsent("subPackage" + typePascal, subPackage);
 
             String suffix = SuffixUtil.resolveDefaultIfEmpty(generatorProperty.getSuffix(), type);
-
-            String className = context.className() + suffix;
+            String className = context.getClassName() + suffix;
 
             if (type.equals("spec-builder")) {
                 // Exclude class name
                 className = suffix;
             }
 
+
+            // package e.g. (key=packageDto, value=com.example.demo.dto)
+            data.putIfAbsent("package" + typePascal, context.getRootPackage() + "." + subPackage);
+
             // package e.g. (key=classNameDto, value=UserDto)
-            data.put("className" + typPascal, new SmartString(className));
+            data.putIfAbsent("className" + typePascal, new SmartString(className));
 
             // package e.g. [(key=suffixDto, value=UserDto)]
-            data.put("suffix" + typPascal, new SmartString(SuffixUtil.resolveFinalSuffix(type, suffix)));
+            data.putIfAbsent("suffix" + typePascal, new SmartString(SuffixUtil.resolveFinalSuffix(type, suffix)));
         });
     }
 }
