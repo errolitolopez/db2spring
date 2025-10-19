@@ -21,7 +21,7 @@
     <modules>
         <module>db2spring-commons</module>
         <module>db2spring-core</module>
-        <module>db2spring-cli</module>
+        <module>db2spring-generator</module>
     </modules>
 
     <!-- ===================================================== -->
