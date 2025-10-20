@@ -30,7 +30,7 @@ public class ${classNameDtoUpdate} {
     @NotBlank(message="${column.smartColumnName.toSentenceCase()} is required")
             </#if>
             <#if column.size?? && column.size gt 0>
-    @Size(max=${column.size}, message="${column.smartColumnName.toSentenceCase()} must not exceed ${column.size} characters")
+    @Size(max=${column.size?c}, message="${column.smartColumnName.toSentenceCase()} must not exceed ${column.size?c} characters")
             </#if>
         <#else>
             <#if !column.isNullable()>
