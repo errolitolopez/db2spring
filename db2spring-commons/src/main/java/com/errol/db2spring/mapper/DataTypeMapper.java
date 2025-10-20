@@ -11,65 +11,92 @@ public final class DataTypeMapper {
 
     private static final Map<String, String> TYPE_MAP = Map.<String, String>ofEntries(
             // Numeric types
-            entry("TINYINT", "Byte"),
             entry("SMALLINT", "Short"),
-            entry("MEDIUMINT", "Integer"),
-            entry("INT", "Integer"),
+            entry("INT2", "Short"),
             entry("INTEGER", "Integer"),
-            entry("YEAR", "Integer"),
+            entry("INT", "Integer"),
+            entry("INT4", "Integer"),
             entry("BIGINT", "Long"),
+            entry("INT8", "Long"),
             entry("SERIAL", "Long"),
             entry("BIGSERIAL", "Long"),
-            entry("BIGINT UNSIGNED", "BigInteger"),
             entry("DECIMAL", "BigDecimal"),
             entry("NUMERIC", "BigDecimal"),
-            entry("DEC", "BigDecimal"),
-            entry("NUMBER", "BigDecimal"),
+            entry("REAL", "Float"),
+            entry("FLOAT4", "Float"),
+            entry("DOUBLE PRECISION", "Double"),
+            entry("FLOAT8", "Double"),
             entry("MONEY", "BigDecimal"),
-            entry("SMALLMONEY", "BigDecimal"),
-            entry("FLOAT", "Float"),
-            entry("DOUBLE", "Double"),
-            entry("REAL", "Double"),
-            entry("BIT", "Boolean"),
+
+            // Boolean
             entry("BOOLEAN", "Boolean"),
             entry("BOOL", "Boolean"),
 
-            // Binary / blob
-            entry("BINARY", "byte[]"),
-            entry("VARBINARY", "byte[]"),
-            entry("TINYBLOB", "byte[]"),
-            entry("BLOB", "byte[]"),
-            entry("MEDIUMBLOB", "byte[]"),
-            entry("LONGBLOB", "byte[]"),
-
-            // String types
+            // Character / String
             entry("CHAR", "String"),
+            entry("CHARACTER", "String"),
             entry("VARCHAR", "String"),
+            entry("CHARACTER VARYING", "String"),
             entry("TEXT", "String"),
-            entry("TINYTEXT", "String"),
-            entry("MEDIUMTEXT", "String"),
-            entry("LONGTEXT", "String"),
-            entry("ENUM", "String"),
-            entry("SET", "String"),
-            entry("NVARCHAR", "String"),
-            entry("NCHAR", "String"),
-            entry("NTEXT", "String"),
+            entry("CITEXT", "String"), // case-insensitive text extension
             entry("UUID", "String"),
-            entry("UNIQUEIDENTIFIER", "String"),
             entry("JSON", "String"),
             entry("JSONB", "String"),
             entry("XML", "String"),
+            entry("ENUM", "String"),
 
-            // Date / Time types
+            // Binary types
+            entry("BYTEA", "byte[]"),
+
+            // Date / Time
             entry("DATE", "LocalDate"),
-            entry("DATETIME", "LocalDateTime"),
+            entry("TIME", "LocalTime"),
+            entry("TIME WITHOUT TIME ZONE", "LocalTime"),
+            entry("TIME WITH TIME ZONE", "OffsetTime"),
             entry("TIMESTAMP", "LocalDateTime"),
             entry("TIMESTAMP WITHOUT TIME ZONE", "LocalDateTime"),
-            entry("SMALLDATETIME", "LocalDateTime"),
             entry("TIMESTAMP WITH TIME ZONE", "OffsetDateTime"),
             entry("TIMESTAMPTZ", "OffsetDateTime"),
-            entry("TIME", "LocalTime"),
-            entry("TIME WITH TIME ZONE", "OffsetTime")
+            entry("INTERVAL", "Duration"),
+
+            // Network types
+            entry("CIDR", "String"),
+            entry("INET", "String"),
+            entry("MACADDR", "String"),
+            entry("MACADDR8", "String"),
+
+            // Geometric types
+            entry("POINT", "String"),
+            entry("LINE", "String"),
+            entry("LSEG", "String"),
+            entry("BOX", "String"),
+            entry("PATH", "String"),
+            entry("POLYGON", "String"),
+            entry("CIRCLE", "String"),
+
+            // Full text search
+            entry("TSVECTOR", "String"),
+            entry("TSQUERY", "String"),
+
+            // Bit strings
+            entry("BIT", "Boolean"),
+            entry("VARBIT", "String"),
+            entry("BIT VARYING", "String"),
+
+            // Other / system
+            entry("OID", "Long"),
+            entry("REGCLASS", "String"),
+            entry("PG_LSN", "String"),
+            entry("TXID_SNAPSHOT", "String"),
+
+            // Arrays — typically represented as List or array
+            entry("INT[]", "Integer[]"),
+            entry("TEXT[]", "String[]"),
+            entry("VARCHAR[]", "String[]"),
+            entry("UUID[]", "String[]"),
+            entry("BYTEA[]", "byte[][]"),
+            entry("NUMERIC[]", "BigDecimal[]"),
+            entry("BOOLEAN[]", "Boolean[]")
     );
 
     private static final String JAVA_OBJECT = "Object";

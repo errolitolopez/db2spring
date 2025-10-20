@@ -64,7 +64,7 @@ public class ColumnUtil {
         return CollectionUtil.findFirstAndMap(
                 typeOverrides,
                 TypeOverride::getJavaType,
-                t -> t.getSqlType().equals(sqlType)
+                t -> t.getSqlType().equalsIgnoreCase(sqlType)
         ).orElse(javaType);
     }
 
