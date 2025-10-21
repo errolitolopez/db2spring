@@ -32,20 +32,20 @@ public class Db2SpringGeneratorTest {
     }
 
     private Db2springProperty buildProperty() {
-        return new Db2springProperty(
-                new ProjectInfo()
+        return new Db2springProperty()
+                .setProjectInfo(new ProjectInfo()
                         .setProjectName("db2spring")
                         .setGroupId("com.example")
                         .setArtifactId("db2spring")
                         .setJavaVersion("17")
                         .setSpringBootVersion("3.5.3")
-                        .setFileStructure("featuredGroup"),
-                buildDependencies(),
-                buildTableMappings(),
-                buildTypeOverrides(),
-                buildGeneratorProperties(),
-                buildPlugins()
-        );
+                        .setFileStructure("layeredDto"))
+                .setDependencies(buildDependencies())
+                .setTableMappings(buildTableMappings())
+                .setTypeOverrides(buildTypeOverrides())
+                .setGeneratorProperties(buildGeneratorProperties())
+                .setPlugins(buildPlugins())
+                .setExcludedColumns(List.of("parent_id"));
     }
 
     private static String getSql() {

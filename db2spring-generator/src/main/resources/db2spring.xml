@@ -26,6 +26,7 @@
     <table table-name="users" class-name="User"/>
 
     <type-override column-name="" sql-type="DATETIME" java-type="Instant"/>
+    <excluded-column column-name="password"/>
 
     <generator generate="true" type="entity" sub-package="entity" output-dir="src/main/java"/>
     <generator generate="true" type="repository" sub-package="repository" output-dir="src/main/java"/>

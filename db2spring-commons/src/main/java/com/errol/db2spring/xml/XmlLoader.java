@@ -23,7 +23,8 @@ public class XmlLoader {
                     XmlParser.parseTableMappings(doc),
                     XmlParser.parseTypeOverrides(doc),
                     XmlParser.parseGenerators(doc),
-                    XmlParser.parsePlugins(doc)
+                    XmlParser.parsePlugins(doc),
+                    XmlParser.parseExcludedColumns(doc)
             );
         } catch (Exception e) {
             throw new Db2springException("Failed to load config: " + filePath, e);

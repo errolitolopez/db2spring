@@ -98,6 +98,14 @@ public class XmlParser {
         return null;
     }
 
+    public static List<String> parseExcludedColumns(Document doc) {
+        return XmlUtil.loadConfigs(doc, "excluded-column", XmlParser::parseExcludedColumn);
+    }
+
+    public static String parseExcludedColumn(Element element) {
+        return element.getAttribute("column-name");
+    }
+
     private static String parseFileStructure(Document doc) {
         Element root = getRootElement(doc);
         if (root == null) return null;

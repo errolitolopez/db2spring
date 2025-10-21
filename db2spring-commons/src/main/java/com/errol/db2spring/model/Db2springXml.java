@@ -18,4 +18,5 @@ public class Db2springXml {
     private List<TypeOverride> typeOverrides;
     private List<GeneratorProperty> generatorProperties;
     private List<Plugin> plugins;
+    private List<String> excludedColumns;
 }

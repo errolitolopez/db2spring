@@ -17,4 +17,5 @@ public class TableDataContext {
     private String tableName;
     private Table table;
     private List<TypeOverride> typeOverrides;
+    private List<String> excludedColumns;
 }

@@ -37,11 +37,12 @@ public class ColumnUtil {
         return ImportMapper.getMappings().get(javaType);
     }
 
-    public static List<Column> resolvedColumns(List<Column> columns, List<TypeOverride> typeOverrides) {
+    public static List<Column> resolvedColumns(List<Column> columns, List<TypeOverride> typeOverrides, List<String> excludedColumns) {
         if (CollectionUtil.isBlank(columns)) {
             return List.of();
         }
         return columns.stream()
+                .filter(column -> !CollectionUtil.findAll(excludedColumns).contains(column.getColumnName()))
                 .map(column -> resolveColumn(column, typeOverrides))
                 .collect(Collectors.toCollection(ArrayList::new));
     }

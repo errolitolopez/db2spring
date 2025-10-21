@@ -37,14 +37,13 @@ public class Db2springRunner {
             // Table mappings are already resolved by Db2springAppRunner
             List<TableMapping> resolvedTableMappings = xml.getTableMappings();
 
-            Db2springProperty property = new Db2springProperty(
-                    xml.getProjectInfo(),
-                    null,
-                    resolvedTableMappings,
-                    xml.getTypeOverrides(),
-                    resolvedGeneratorProperties,
-                    xml.getPlugins()
-            );
+            Db2springProperty property = new Db2springProperty()
+                    .setProjectInfo(xml.getProjectInfo())
+                    .setTableMappings(resolvedTableMappings)
+                    .setTypeOverrides(xml.getTypeOverrides())
+                    .setGeneratorProperties(resolvedGeneratorProperties)
+                    .setPlugins(xml.getPlugins())
+                    .setExcludedColumns(xml.getExcludedColumns());
 
             // 2. Execute Generation
             Db2springGenerator db2SpringGenerator = new Db2springGenerator();

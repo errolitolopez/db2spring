@@ -106,7 +106,12 @@ public class Db2springGenerator {
             data.put("tableName", new SmartString(tableName));
             data.put("className", new SmartString(className));
 
-            applyTableData(data, new TableDataContext(tableName, table, property.getTypeOverrides()));
+            TableDataContext tableDataContext = new TableDataContext()
+                    .setTableName(tableName)
+                    .setTable(table)
+                    .setTypeOverrides(property.getTypeOverrides())
+                    .setExcludedColumns(property.getExcludedColumns());
+            applyTableData(data, tableDataContext);
             applyPluginData(property.getPlugins(), data);
 
             NamingDataContext namingContext = new NamingDataContext()
@@ -271,7 +276,7 @@ public class Db2springGenerator {
 
         data.put("tableName", new SmartString(context.getTableName()));
 
-        List<Column> columns = ColumnUtil.resolvedColumns(table.getColumns(), context.getTypeOverrides());
+        List<Column> columns = ColumnUtil.resolvedColumns(table.getColumns(), context.getTypeOverrides(), context.getExcludedColumns());
         data.put("columns", columns);
 
         Column idColumn = CollectionUtil.findFirst(columns, Column::isPrimaryKey)

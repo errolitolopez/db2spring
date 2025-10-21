@@ -9,12 +9,14 @@ import com.errol.db2spring.model.plugin.Plugin;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Accessors(chain = true)
 public class Db2springProperty {
     private ProjectInfo projectInfo;
     private List<Dependency> dependencies;
@@ -22,4 +24,5 @@ public class Db2springProperty {
     private List<TypeOverride> typeOverrides;
     private List<GeneratorProperty> generatorProperties;
     private List<Plugin> plugins;
+    private List<String> excludedColumns;
 }
