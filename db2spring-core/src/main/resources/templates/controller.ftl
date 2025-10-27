@@ -25,21 +25,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Validated
 </#if>
 @RestController
-@RequestMapping("/api/${className.toKebabCase()}")
+@RequestMapping("/api/${apiName.toKebabCase()}")
 public class ${classNameController} {
 
     @Autowired
     private ${classNameService} ${classNameService.toCamelCase()};
     <#if classNameDtoCreate??>
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<${classNameDtoResponse!classNameDto}> create(@RequestBody <#if pluginSpringBootStarterValidation??>@Valid </#if>${classNameDtoCreate} ${suffixDtoCreate.toCamelCase()}) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(${classNameService.toCamelCase()}.create(${suffixDtoCreate.toCamelCase()}));
     }
     <#else>
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<${classNameDtoResponse!classNameDto}> create(@RequestBody <#if pluginSpringBootStarterValidation??>@Valid </#if>${classNameDto} ${suffixDto.toCamelCase()}) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(${classNameService.toCamelCase()}.create(${suffixDto.toCamelCase()}));
@@ -47,29 +47,29 @@ public class ${classNameController} {
     </#if>
     <#if classNameDtoUpdate??>
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<${classNameDtoResponse!classNameDto}> update(@RequestBody <#if pluginSpringBootStarterValidation??>@Valid </#if>${classNameDtoUpdate} ${suffixDtoUpdate.toCamelCase()}) {
         return ResponseEntity.ok(${classNameService.toCamelCase()}.update(${suffixDtoUpdate.toCamelCase()}));
     }
     <#else>
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<${classNameDtoResponse!classNameDto}> update(@RequestBody <#if pluginSpringBootStarterValidation??>@Valid </#if>${classNameDto} ${suffixDto.toCamelCase()}) {
         return ResponseEntity.ok(${classNameService.toCamelCase()}.update(${suffixDto.toCamelCase()}));
     }
     </#if>
 
-    @GetMapping("/details/{${idColumn.smartColumnName.toCamelCase()}}")
+    @GetMapping("/{${idColumn.smartColumnName.toCamelCase()}}")
     public ResponseEntity<${classNameDtoResponse!classNameDto}> details(@PathVariable ${idColumn.javaType} ${idColumn.smartColumnName.toCamelCase()}) {
         return ResponseEntity.ok(${classNameService.toCamelCase()}.details(${idColumn.smartColumnName.toCamelCase()}));
     }
 
-    @GetMapping("/search")
+    @GetMapping
     public ResponseEntity<Page<${classNameDtoResponse!classNameDto}>> search(<#if classNameDtoRequest??>${classNameDtoRequest} ${suffixDtoRequest.toCamelCase()}, </#if>Pageable pageable) {
         return ResponseEntity.ok(${classNameService.toCamelCase()}.search(<#if classNameDtoRequest??>${suffixDtoRequest.toCamelCase()}, </#if>pageable));
     }
 
-    @DeleteMapping("/delete/{${idColumn.smartColumnName.toCamelCase()}}")
+    @DeleteMapping("/{${idColumn.smartColumnName.toCamelCase()}}")
     public ResponseEntity<Void> delete(@PathVariable ${idColumn.javaType} ${idColumn.smartColumnName.toCamelCase()}) {
         ${classNameService.toCamelCase()}.delete(${idColumn.smartColumnName.toCamelCase()});
         return ResponseEntity.noContent().build();

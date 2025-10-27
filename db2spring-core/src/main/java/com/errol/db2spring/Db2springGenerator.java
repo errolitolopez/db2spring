@@ -103,8 +103,10 @@ public class Db2springGenerator {
             String className = tableMapping.getClassName();
             String rootPackage = ProjectInfoUtil.getRootPackage(projectInfo);
 
-            data.put("tableName", new SmartString(tableName));
+            SmartString smartTableName = new SmartString(tableName);
+            data.put("tableName", smartTableName);
             data.put("className", new SmartString(className));
+            data.put("apiName", smartTableName.get().endsWith("s") ? smartTableName : smartTableName.toPlural());
 
             TableDataContext tableDataContext = new TableDataContext()
                     .setTableName(tableName)
@@ -306,7 +308,7 @@ public class Db2springGenerator {
 
             final String typePascal = SmartStringUtil.toPascalCase(type);
 
-            String subPackage =  PackageUtil.resolveDefaultIfEmpty(generatorProperty.getSubPackage(), type);
+            String subPackage = PackageUtil.resolveDefaultIfEmpty(generatorProperty.getSubPackage(), type);
 
             if (!type.equals("spec-builder")) {
                 SubPackageContext subPackageContext = new SubPackageContext()
