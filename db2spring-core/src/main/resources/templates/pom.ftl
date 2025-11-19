@@ -89,7 +89,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok-mapstruct-binding</artifactId>
-                            <version><#noparse>{lombok-mapstruct-binding.version}</#noparse></version>
+                            <version><#noparse>${lombok-mapstruct-binding.version}</#noparse></version>
                         </path>
                         </#if>
                     </annotationProcessorPaths>
