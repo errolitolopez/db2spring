@@ -1,6 +1,7 @@
 package ${packageDtoResponse};
 <#if pluginLombok??>
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ ${fieldImports}
 
 <#if pluginLombok??>
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 </#if>

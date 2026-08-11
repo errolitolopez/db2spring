@@ -18,13 +18,13 @@ public interface ${classNameMapper} {
 </#if>
 <#if classNameDtoCreate?? && classNameEntity??>
 
-    ${classNameDtoCreate} to${suffixDtoCreate}(${classNameEntity} ${suffixEntity});
+    ${classNameDtoCreate} to${suffixDtoCreate}(${classNameEntity} ${suffixEntity.toCamelCase()});
 
     ${classNameEntity} from${suffixDtoCreate}(${classNameDtoCreate} ${suffixDtoCreate.toCamelCase()});
 </#if>
 <#if classNameDtoUpdate?? && classNameEntity??>
 
-    ${classNameDtoUpdate} to${suffixDtoUpdate}(${classNameEntity} ${suffixEntity});
+    ${classNameDtoUpdate} to${suffixDtoUpdate}(${classNameEntity} ${suffixEntity.toCamelCase()});
 
     ${classNameEntity} from${suffixDtoUpdate}(${classNameDtoUpdate} ${suffixDtoUpdate.toCamelCase()});
 
@@ -33,6 +33,6 @@ public interface ${classNameMapper} {
 </#if>
 <#if classNameDtoResponse?? && classNameEntity??>
 
-    ${classNameDtoResponse} to${suffixDtoResponse}(${classNameEntity} ${suffixEntity});
+    ${classNameDtoResponse} to${suffixDtoResponse}(${classNameEntity} ${suffixEntity.toCamelCase()});
 </#if>
 }

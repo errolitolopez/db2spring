@@ -29,7 +29,11 @@ public class ImportUtil {
                     "DtoCreate",
                     "DtoRequest",
                     "DtoResponse",
-                    "DtoUpdate"
+                    "DtoUpdate",
+                    "Entity",
+                    "Mapper",
+                    "Repository",
+                    "SpecBuilder"
             ),
             "service-impl", List.of(
                     "Dto",

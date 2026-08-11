@@ -1,50 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- ===================================================== -->
-    <!-- Root / Parent POM for JitPack publishing -->
-    <!-- ===================================================== -->
-    <groupId>com.github.errolitolopez</groupId>
+    <groupId>io.github.errolitolopez</groupId>
     <artifactId>db2spring</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
+
     <name>db2spring</name>
     <description>Database to Spring Code Generator</description>
     <url>https://github.com/errolitolopez/db2spring</url>
 
-    <!-- ===================================================== -->
-    <!-- Modules -->
-    <!-- ===================================================== -->
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/license/mit/</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>errolitolopez</id>
+            <name>Errol Lopez</name>
+            <url>https://github.com/errolitolopez</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/errolitolopez/db2spring.git</connection>
+        <developerConnection>scm:git:ssh://github.com/errolitolopez/db2spring.git</developerConnection>
+        <url>https://github.com/errolitolopez/db2spring</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <modules>
         <module>db2spring-commons</module>
         <module>db2spring-core</module>
         <module>db2spring-generator</module>
+        <module>db2spring-maven-plugin</module>
     </modules>
 
-    <!-- ===================================================== -->
-    <!-- Common Properties -->
-    <!-- ===================================================== -->
     <properties>
-        <maven.version>3.8.4</maven.version>
         <java.version>11</java.version>
+
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Versions -->
         <lombok.version>1.18.30</lombok.version>
         <freemarker.version>2.3.32</freemarker.version>
+
+        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.10.1</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+        <central-publishing-plugin.version>0.8.0</central-publishing-plugin.version>
     </properties>
 
-    <!-- ===================================================== -->
-    <!-- Dependency Management -->
-    <!-- ===================================================== -->
     <dependencyManagement>
         <dependencies>
-            <!-- Lombok -->
+
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -52,22 +70,19 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- Freemarker -->
             <dependency>
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker</artifactId>
                 <version>${freemarker.version}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
-    <!-- ===================================================== -->
-    <!-- Build configuration -->
-    <!-- ===================================================== -->
     <build>
         <pluginManagement>
             <plugins>
-                <!-- Compiler plugin -->
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -79,27 +94,85 @@
                     </configuration>
                 </plugin>
 
-                <!-- Shade plugin (optional, used by db2spring-generatorProperty CLI JAR) -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>3.5.1</version>
                 </plugin>
+
             </plugins>
         </pluginManagement>
+
+        <plugins>
+
+            <!-- Sources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Javadocs -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- GPG signing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Maven Central -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${central-publishing-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <tokenAuth>true</tokenAuth>
+                    <autoPublish>true</autoPublish>
+                </configuration>
+            </plugin>
+
+        </plugins>
     </build>
 
-    <!-- ===================================================== -->
-    <!-- SCM (helps JitPack resolve the Git repo) -->
-    <!-- ===================================================== -->
-    <scm>
-        <connection>scm:git:git://github.com/errolitolopez/db2spring.git</connection>
-        <developerConnection>scm:git:ssh://github.com/errolitolopez/db2spring.git</developerConnection>
-        <url>https://github.com/errolitolopez/db2spring</url>
-        <tag>HEAD</tag>
-    </scm>
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://central.sonatype.com/api/v1/publisher/deployments/download/</url>
+        </repository>
+    </distributionManagement>
 
-    <!-- ===================================================== -->
-    <!-- Distribution Management (JitPack doesn't require this) -->
-    <!-- ===================================================== -->
 </project>

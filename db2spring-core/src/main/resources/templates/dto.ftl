@@ -1,12 +1,13 @@
 package ${packageDto};
 <#if pluginSpringBootStarterValidation??>
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 </#if>
 <#if pluginLombok??>
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ ${fieldImports}
 
 <#if pluginLombok??>
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 </#if>
@@ -27,14 +29,14 @@ public class ${classNameDto} {
     <#if pluginSpringBootStarterValidation??>
         <#if column.javaType == "String">
             <#if !column.isNullable()>
-    @NotBlank(message="${column.smartColumnName.toSentenceCase()} is required")
+    @NotBlank(message = "${column.smartColumnName.toSentenceCase()} is required")
             </#if>
             <#if column.size?? && column.size gt 0>
-    @Size(max=${column.size?c}, message="${column.smartColumnName.toSentenceCase()} must not exceed ${column.size?c} characters")
+    @Size(max = ${column.size?c}, message = "${column.smartColumnName.toSentenceCase()} must not exceed ${column.size?c} characters")
             </#if>
         <#else>
             <#if !column.isNullable()>
-    @NotNull(message="${column.smartColumnName.toSentenceCase()} is required")
+    @NotNull(message = "${column.smartColumnName.toSentenceCase()} is required")
             </#if>
         </#if>
     </#if>
