@@ -14,7 +14,7 @@ public class Db2springAppRunner {
 
     public void run(String[] args) {
         if (args.length == 0) {
-            CliLogger.logErrorAndExit("No config file provided. Usage: java -jar db2spring.jar <config.xml>");
+            CliLogger.logErrorAndExit("No config file provided. Usage: mvn db2spring:generate -Dconfig=db2spring-config.xml");
         }
 
         String configFile = args[0];

@@ -2,7 +2,7 @@ package ${packageController};
 
 ${classImports}
 <#if pluginSpringBootStarterValidation??>
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 </#if>
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

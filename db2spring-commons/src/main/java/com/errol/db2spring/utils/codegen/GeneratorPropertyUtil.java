@@ -25,7 +25,6 @@ public class GeneratorPropertyUtil {
             "mapper",
             "repository",
             "service",
-            "service-impl",
             "spec-builder"
     );
 

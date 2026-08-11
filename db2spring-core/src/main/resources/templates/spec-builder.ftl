@@ -1,14 +1,14 @@
 package ${packageSpecBuilder};
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.persistence.criteria.*;
+import javax.persistence.criteria.*;
 import java.util.*;
 
 /**
