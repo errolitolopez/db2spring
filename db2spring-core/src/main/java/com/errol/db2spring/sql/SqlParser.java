@@ -69,15 +69,18 @@ public final class SqlParser {
         for (String sql : sqlStatements) {
             try {
                 Statement stmt = CCJSqlParserUtil.parse(sql);
-                if (stmt instanceof CreateTable createTable) {
-                    createTables.add(createTable);
+                if (stmt instanceof CreateTable) {
+                    createTables.add((CreateTable) stmt);
                 } else {
-                    throw new Db2springException("Failed to parse sql file, not a CREATE TABLE statement");
+                    throw new Db2springException(
+                            "Failed to parse sql file, not a CREATE TABLE statement"
+                    );
                 }
             } catch (JSQLParserException e) {
                 throw new Db2springException("Failed to parse sql file", e.getMessage());
             }
         }
+
         return Collections.unmodifiableList(createTables);
     }
 }

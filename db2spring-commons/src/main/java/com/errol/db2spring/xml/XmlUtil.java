@@ -45,12 +45,13 @@ public class XmlUtil {
         }
 
         Node node = nodes.item(0);
-        if (!(node instanceof Element element)) {
+        if (!(node instanceof Element)) {
             return null;
         }
 
+        Element element = (Element) node;
         String value = element.getAttribute(attributeName);
-        return !value.isBlank() ? value.trim() : null;
+        return !value.trim().isEmpty() ? value.trim() : null;
     }
 
     public static <T> List<T> loadConfigs(Document doc, String tagName, Function<Element, T> mapper) {

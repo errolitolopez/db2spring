@@ -24,8 +24,11 @@ public final class SqlUtil {
             sb.append(line).append("\n");
 
             for (char c : line.toCharArray()) {
-                if (c == '(') parens++;
-                else if (c == ')') parens--;
+                if (c == '(') {
+                    parens++;
+                } else if (c == ')') {
+                    parens--;
+                }
             }
 
             if (trimmed.endsWith(";") && parens == 0) {
@@ -34,7 +37,7 @@ public final class SqlUtil {
             }
         }
 
-        if (!sb.isEmpty()) {
+        if (sb.length() > 0) {
             statements.add(sb.toString().trim());
         }
 

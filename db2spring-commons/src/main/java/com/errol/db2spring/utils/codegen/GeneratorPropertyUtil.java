@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class GeneratorPropertyUtil {
@@ -49,7 +50,7 @@ public class GeneratorPropertyUtil {
                         PackageUtil.resolveDefault(generator),
                         SuffixUtil.resolveDefault(generator)
                 ))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public static List<GeneratorProperty> resolveGenerators(List<GeneratorProperty> generatorProperties) {
@@ -71,6 +72,6 @@ public class GeneratorPropertyUtil {
                             : SuffixUtil.resolveDefault(type);
 
                     return new GeneratorProperty(type, enable, outputDir, subPackage, suffix);
-                }).toList();
+                }).collect(Collectors.toList());
     }
 }

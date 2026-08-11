@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Db2SpringGeneratorTest {
 
@@ -49,37 +50,35 @@ public class Db2SpringGeneratorTest {
     }
 
     private static String getSql() {
-        return """
-                CREATE TABLE users (
-                    user_id BIGINT PRIMARY KEY,
-                    username VARCHAR(50) NOT NULL UNIQUE,
-                    email VARCHAR(100) NOT NULL UNIQUE,
-                    password_hash VARCHAR(255) NOT NULL,
-                    display_name VARCHAR(100),
-                    bio TEXT,
-                    profile_picture_url VARCHAR(255),
-                    is_active BOOLEAN DEFAULT TRUE,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                    created_by BIGINT,
-                    updated_by BIGINT
-                );
-                
-                CREATE TABLE user_settings (
-                    setting_id BIGINT PRIMARY KEY,
-                    user_id BIGINT NOT NULL,
-                    privacy_level VARCHAR(20) DEFAULT 'public',
-                    email_notifications BOOLEAN DEFAULT TRUE,
-                    push_notifications BOOLEAN DEFAULT TRUE,
-                    theme VARCHAR(20) DEFAULT 'light',
-                    language VARCHAR(10) DEFAULT 'en',
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                    created_by BIGINT,
-                    updated_by BIGINT,
-                    FOREIGN KEY (user_id) REFERENCES users(user_id)
-                );
-                """;
+        return "CREATE TABLE users (\n"
+                + "    user_id BIGINT PRIMARY KEY,\n"
+                + "    username VARCHAR(50) NOT NULL UNIQUE,\n"
+                + "    email VARCHAR(100) NOT NULL UNIQUE,\n"
+                + "    password_hash VARCHAR(255) NOT NULL,\n"
+                + "    display_name VARCHAR(100),\n"
+                + "    bio TEXT,\n"
+                + "    profile_picture_url VARCHAR(255),\n"
+                + "    is_active BOOLEAN DEFAULT TRUE,\n"
+                + "    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n"
+                + "    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n"
+                + "    created_by BIGINT,\n"
+                + "    updated_by BIGINT\n"
+                + ");\n"
+                + "\n"
+                + "CREATE TABLE user_settings (\n"
+                + "    setting_id BIGINT PRIMARY KEY,\n"
+                + "    user_id BIGINT NOT NULL,\n"
+                + "    privacy_level VARCHAR(20) DEFAULT 'public',\n"
+                + "    email_notifications BOOLEAN DEFAULT TRUE,\n"
+                + "    push_notifications BOOLEAN DEFAULT TRUE,\n"
+                + "    theme VARCHAR(20) DEFAULT 'light',\n"
+                + "    language VARCHAR(10) DEFAULT 'en',\n"
+                + "    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n"
+                + "    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n"
+                + "    created_by BIGINT,\n"
+                + "    updated_by BIGINT,\n"
+                + "    FOREIGN KEY (user_id) REFERENCES users(user_id)\n"
+                + ");";
     }
 
     private List<GeneratorProperty> buildGeneratorProperties() {
@@ -91,7 +90,7 @@ public class Db2SpringGeneratorTest {
                         PackageUtil.resolveDefault(generator),
                         SuffixUtil.resolveDefault(generator)
                 ))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private static List<TableMapping> buildTableMappings() {

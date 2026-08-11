@@ -32,7 +32,7 @@ The project is structured as a multi-module Maven project to separate concerns b
 
 ### Prerequisites
 
-1.  **Java 17+**
+1.  **Java 11**
 2.  **Maven 3.x**
 
 ### 1\. Build the Project

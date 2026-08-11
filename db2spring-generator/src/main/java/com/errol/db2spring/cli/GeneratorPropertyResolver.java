@@ -8,6 +8,7 @@ import com.errol.db2spring.utils.collection.CollectionUtil;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GeneratorPropertyResolver {
 
@@ -26,7 +27,7 @@ public class GeneratorPropertyResolver {
 
         List<GeneratorProperty> missing = GeneratorPropertyUtil.getGenerators().stream()
                 .filter(g -> !configuredTypes.contains(g.getType()))
-                .toList();
+                .collect(Collectors.toList());
 
         if (!missing.isEmpty()) {
             logMissingGeneratorWarning(missing);

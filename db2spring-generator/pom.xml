@@ -13,12 +13,6 @@
 
     <artifactId>db2spring-generator</artifactId>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <!-- Core modules -->
         <dependency>
@@ -26,7 +20,6 @@
             <artifactId>db2spring-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.github.errolitolopez</groupId>
             <artifactId>db2spring-core</artifactId>
@@ -49,23 +42,13 @@
 
     <build>
         <plugins>
-            <!-- Compiler -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
+            <!-- Compiler plugin: version/config inherited from parent pluginManagement -->
 
             <!-- Shade plugin (for fat jar) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0</version>
+                <!-- version inherited from parent pluginManagement (3.5.1); pin here only if this module needs a different version -->
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -75,7 +58,7 @@
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <finalName>${project.artifactId}</finalName>
-                            <shadedArtifactAttached>false</shadedArtifactAttached> <!-- 👈 ensures shaded jar replaces main -->
+                            <shadedArtifactAttached>false</shadedArtifactAttached> <!-- ensures shaded jar replaces main -->
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.errol.db2spring.Db2springApplication</mainClass> <!-- adjust if needed -->

@@ -88,11 +88,17 @@ public class ColoredLogger {
 
         public LogOptions level(Level level) {
             this.level = level;
-            this.levelColor = switch (level) {
-                case INFO -> BLUE;
-                case WARNING -> YELLOW;
-                case ERROR -> RED;
-            };
+            switch (level) {
+                case INFO:
+                    this.levelColor = BLUE;
+                    break;
+                case WARNING:
+                    this.levelColor = YELLOW;
+                    break;
+                case ERROR:
+                    this.levelColor = RED;
+                    break;
+            }
             return this;
         }
 
@@ -142,7 +148,7 @@ public class ColoredLogger {
 
         for (String word : words) {
             while (word.length() > maxMessageLength) {
-                if (!lineBuilder.isEmpty()) {
+                if (lineBuilder.length() > 0) {
                     printLine(coloredTag, lineBuilder.toString(), options, messageColor);
                     lineBuilder.setLength(0);
                 }
@@ -150,12 +156,12 @@ public class ColoredLogger {
                 word = word.substring(maxMessageLength);
             }
 
-            if (lineBuilder.length() + word.length() + (!lineBuilder.isEmpty() ? 1 : 0) > maxMessageLength) {
+            if (lineBuilder.length() + word.length() + (lineBuilder.length() > 0 ? 1 : 0) > maxMessageLength) {
                 printLine(coloredTag, lineBuilder.toString(), options, messageColor);
                 lineBuilder.setLength(0);
             }
 
-            if (!lineBuilder.isEmpty()) lineBuilder.append(" ");
+            if (lineBuilder.length() > 0) lineBuilder.append(" ");
             lineBuilder.append(word);
         }
 
@@ -163,33 +169,20 @@ public class ColoredLogger {
         printLine(coloredTag, lineBuilder.toString(), options, messageColor);
     }
 
-    private static void printLine(String coloredTag, String line, LogOptions options, String messageColor) {
-        String coloredLine = (messageColor.isEmpty() ? "" : messageColor) + line + RESET;
-        int remainingLength = LINE_LENGTH - visibleLength(coloredTag) - visibleLength(line);
-
-        int leftDashes = 0, rightDashes = 0;
-        if (options.withDashes) {
-            switch (options.alignment) {
-                case LEFT -> rightDashes = remainingLength;
-                case CENTER -> {
-                    leftDashes = remainingLength / 2;
-                    rightDashes = remainingLength - leftDashes;
-                }
-                case RIGHT -> leftDashes = remainingLength;
-            }
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(coloredTag).append(" ");
-        if (options.withDashes) sb.append("-".repeat(Math.max(0, leftDashes)));
-        sb.append(coloredLine);
-        if (options.withDashes) sb.append("-".repeat(Math.max(0, rightDashes)));
-
-        System.out.println(sb);
-    }
-
     private static int visibleLength(String str) {
         return str.replaceAll("\u001B\\[[;\\d]*m", "").length();
+    }
+
+    private static void printLine(String coloredTag, String message, LogOptions options, String messageColor) {
+        // Replaces ANSI escape codes or builds the formatted line
+        String formattedOutput = String.format("%s %s%s%s",
+                coloredTag,
+                messageColor != null ? messageColor : "",
+                message,
+                "\u001B[0m" // Reset color code
+        );
+
+        System.out.println(formattedOutput);
     }
 
     // -------------------- Test --------------------

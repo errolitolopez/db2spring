@@ -2,8 +2,6 @@ package com.errol.db2spring.exception;
 
 import lombok.Getter;
 
-import java.io.Serial;
-
 /**
  * Base exception for all db2spring errors.
  * Supports error codes and nested causes for better debugging.
@@ -11,7 +9,6 @@ import java.io.Serial;
 @Getter
 public class Db2springException extends RuntimeException {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /** Optional error code to categorize the exception

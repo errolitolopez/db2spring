@@ -23,14 +23,23 @@ public class ColumnUtil {
     }
 
     public static Integer resolveDefaultSizeIfEmpty(String sqlType) {
-        return switch (sqlType) {
-            case "TINYINT" -> 3;
-            case "SMALLINT" -> 5;
-            case "MEDIUMINT" -> 8;
-            case "INT", "INTEGER", "DECIMAL", "NUMERIC" -> 10;
-            case "BIGINT" -> 19;
-            default -> null;
-        };
+        switch (sqlType) {
+            case "TINYINT":
+                return 3;
+            case "SMALLINT":
+                return 5;
+            case "MEDIUMINT":
+                return 8;
+            case "INT":
+            case "INTEGER":
+            case "DECIMAL":
+            case "NUMERIC":
+                return 10;
+            case "BIGINT":
+                return 19;
+            default:
+                return null;
+        }
     }
 
     public static String getFullyQualifiedName(String javaType) {

@@ -14,10 +14,15 @@ public class PackageUtil {
         if (StringUtil.isNotBlank(given)) {
             return given;
         }
+
         switch (type) {
             case "controller":
                 return "controller";
-            case "dto", "dto-response", "dto-create", "dto-request", "dto-update":
+            case "dto":
+            case "dto-response":
+            case "dto-create":
+            case "dto-request":
+            case "dto-update":
                 return "dto";
             case "mapper":
                 return "mapper";
