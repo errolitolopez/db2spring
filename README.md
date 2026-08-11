@@ -1,53 +1,90 @@
 # `db2spring`: Database to Spring Code Generator
 
-**db2spring** is a powerful, command-line interface (CLI) tool designed to automate the repetitive task of generating boilerplate code for Spring Boot applications from an existing relational database schema or raw SQL `CREATE TABLE` statements.
+**db2spring** is a Java code generation tool that automates the repetitive task of generating boilerplate code for
+Spring Boot applications from an existing relational database schema or raw SQL `CREATE TABLE` statements.
 
-By defining your database connection and desired class mappings in an XML configuration file, **db2spring** generates complete, ready-to-use Spring Boot components, including Entities, Repositories, Services, Controllers, and various Data Transfer Objects (DTOs).
+By defining your database connection and desired class mappings in an XML configuration file, **db2spring** generates
+ready-to-use Spring Boot components, including Entities, Repositories, Services, Controllers, and various Data Transfer
+Objects (DTOs).
 
------
-
-## ✨ Features
-
-* **Flexible Source:** Load schema information from a live database connection (via JDBC) or directly from SQL `CREATE TABLE` statements in a file or string.
-* **Customizable Generation:** Fine-tune which files (e.g., `controller`, `service`, `entity`) are generated, their output directories, and their class suffixes.
-* **Case Conversion & Inflection:** Automatically handles SQL naming conventions (e.g., `user_settings`) and converts them to appropriate Java names (e.g., `UserSettings`, `UserSetting`) using SmartString utilities.
-* **Plugin Support:** Conditional generation for popular plugins like Lombok, MapStruct, and Spring Boot Validation.
-* **Type Overrides:** Define custom mappings for SQL types to specific Java types (e.g., `TIMESTAMP` -\> `java.time.Instant`).
-
------
-
-## 📦 Module Structure
-
-The project is structured as a multi-module Maven project to separate concerns between core logic, shared data models, and the executable CLI.
-
-| Module | Description | Key Responsibilities |
-| :--- | :--- | :--- |
-| **`db2spring-commons`** | Contains all **shared data models, core utilities, and type mappers**. It has no dependencies on other project modules. | Models (`Table`, `Column`, `Db2springXml`), Utility classes (`SmartStringUtil`, `CollectionUtil`, `MapUtil`), Database inspection logic (`DatabaseLoader`). |
-| **`db2spring-core`** | Houses the **main generation engine** and all Freemarker templates (`.ftl`) for the output files. | Generation logic (`Db2springGenerator`), Template engine (`FreeMarkerWriter`), SQL parsing (`SqlParser`), and all templates for Spring components (`entity.ftl`, `controller.ftl`, etc.). |
-| **`db2spring-generator`** | The **executable CLI module** that provides the main entry point for the user. It loads the configuration, coordinates the table loading, and triggers the core generator. | CLI execution (`Db2springApplication`), Configuration loading (`Db2springAppRunner`), Generator orchestration (`Db2springRunner`), and configuration file resolution. |
-
------
-
-## ⚙️ Setup and Usage
-
-### Prerequisites
-
-1.  **Java 11**
-2.  **Maven 3.x**
-
-### 1\. Build the Project
-
-Use Maven to build the entire project. The `db2spring-generator` module is configured to produce a **fat JAR** (using the `maven-shade-plugin`) for easy command-line execution.
+The recommended way to use **db2spring** is through its Maven plugin:
 
 ```bash
-mvn clean install
+mvn db2spring:generate
 ```
 
-### 2\. Configure `config.xml`
+---
 
-The CLI tool requires an XML configuration file to define the project structure, database source, and generation options.
+##  Features
 
-A typical configuration file, like the example provided, includes the following sections:
+- **Database Support:** Load schema information from a live database connection using JDBC or directly from SQL
+  `CREATE TABLE` statements.
+- **Maven Plugin:** Generate code directly from your Maven project using `mvn db2spring:generate`.
+- **Customizable Generation:** Control which components are generated, their output directories, package structure, and
+  class suffixes.
+- **Case Conversion & Inflection:** Automatically converts SQL naming conventions such as `user_settings` into
+  appropriate Java names such as `UserSettings` and `UserSetting`.
+- **Plugin Support:** Conditional generation for popular libraries and frameworks such as Lombok, MapStruct, and Spring
+  Boot Validation.
+- **Type Overrides:** Define custom mappings from SQL types to specific Java types, such as `TIMESTAMP` to
+  `java.time.Instant`.
+- **Multiple Project Structures:** Supports different output layouts such as `layered`, `layeredDto`, `selfContained`,
+  and `featuredGroup`.
+
+---
+
+##  Module Structure
+
+The project is structured as a multi-module Maven project:
+
+| Module                       | Description                                                                   | Key Responsibilities                                                               |
+|:-----------------------------|:------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------|
+| **`db2spring-commons`**      | Shared data models and utility classes used across the project.               | Models, utility classes, type mappings, and database inspection logic.             |
+| **`db2spring-core`**         | Main code generation engine and Freemarker templates.                         | Code generation, template processing, SQL parsing, and Spring component templates. |
+| **`db2spring-generator`**    | Standalone CLI entry point for db2spring.                                     | Configuration loading, CLI execution, and generator orchestration.                 |
+| **`db2spring-maven-plugin`** | Maven plugin integration for running db2spring directly from a Maven project. | Provides the `db2spring:generate` Maven goal and configuration handling.           |
+
+---
+
+## ️ Setup and Usage
+
+## Prerequisites
+
+- **Java 11**
+- **Maven 3.x**
+
+## 1. Add the Maven Plugin
+
+Add the following plugin to your project's `pom.xml`:
+
+```xml
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>io.github.errolitolopez</groupId>
+            <artifactId>db2spring-maven-plugin</artifactId>
+            <version>1.0.0</version>
+        </plugin>
+    </plugins>
+</build>
+```
+
+The plugin is available from Maven Central, so no additional repository configuration is required.
+
+## 2. Configure `db2spring-config.xml`
+
+Create a `db2spring-config.xml` file in the root directory of your Maven project.
+
+The Maven plugin uses `db2spring-config.xml` by default.
+
+You can also specify a custom configuration file:
+
+```bash
+mvn db2spring:generate -Ddb2spring.config=my-db2spring-config.xml
+```
+
+The following XML sections can be used to configure db2spring:
 
 | XML Tag                 | Purpose                                                                                                             |
 |:------------------------|:--------------------------------------------------------------------------------------------------------------------|
@@ -59,41 +96,61 @@ A typical configuration file, like the example provided, includes the following 
 | `<generator>`           | Fine-tunes the output for specific file types (e.g., `type="controller"`, `generate="true"` or `generate="false"`). |
 | `<file-structure>`      | Choose the output file and folder layout (e.g., `layered`, `layeredDto`, `selfContained` or `featuredGroup`).       |
 
-### 3\. Run the Generator
+## 3. Generate the Code
 
-Execute the fat JAR, passing the path to your configuration file as the first argument:
+With `db2spring-config.xml` in your project root, simply run:
 
 ```bash
-java -jar db2spring-generator.jar path/to/your/config.xml
+mvn db2spring:generate
 ```
 
-If successful, the tool will log the generation process and then exit with a success message.
+Or specify a custom configuration file:
 
-> **Note:** If you are using a database connection and an external JDBC driver, ensure the driver JAR is correctly located and referenced in your `config.xml` or made available to the application, as the tool uses custom logic to load the driver dynamically.
+```bash
+mvn db2spring:generate -Ddb2spring.config=db2spring-config.xml
+```
 
+The generator will load the database metadata and generate the configured Spring Boot components.
 
------
+Example output:
 
-## 📄 Sample `config.xml`
+```text
+[INFO] Running db2spring generator...
+[INFO] Starting db2spring generator
+[INFO] Loading tables from database...
+[INFO] Generated: ../src/main/java/com/example/myapi/entity/User.java
+[INFO] Generated: ../src/main/java/com/example/myapi/repository/UserRepository.java
+[INFO] Generated: ../src/main/java/com/example/myapi/service/UserService.java
+[INFO] Generated: ../src/main/java/com/example/myapi/controller/UserController.java
+[INFO] db2spring generation completed successfully!
+```
+
+> **Note:** When using a database connection and an external JDBC driver, make sure the driver JAR is correctly located
+> and referenced in your `db2spring-config.xml`. db2spring dynamically loads the configured JDBC driver.
+
+---
+
+##  Sample `db2spring-config.xml`
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <db2spring>
+
     <database-connection>
-        <url>jdbc:mysql://localhost:3306/sample_schema</url>
-        <user>root</user>
-        <password>123qwe</password>
-        <driver-class>com.mysql.cj.jdbc.Driver</driver-class>
-        <driver-jar>path/to/your/driver.jar</driver-jar>
+        <url>jdbc:postgresql://localhost:5432/sample_schema</url>
+        <user>postgres</user>
+        <password>password</password>
+        <driver-class>org.postgresql.Driver</driver-class>
+        <driver-jar>path/postgresql-42.7.12.jar</driver-jar>
     </database-connection>
 
-     <sql-file src="path/to/your/file.sql"/>
-     <sql>sql create statement</sql>
+    <!--    <sql-file src="path/to/your/file.sql"/>-->
+    <!--    <sql>sql create statement</sql>-->
 
     <project-info>
         <group-id>com.example</group-id>
-        <artifact-id>db2spring</artifact-id>
-        <project-name>db2spring</project-name>
+        <artifact-id>my-api</artifact-id>
+        <project-name>my-api</project-name>
     </project-info>
 
     <plugin name="SpringBootStarterValidation"/>
@@ -102,19 +159,101 @@ If successful, the tool will log the generation process and then exit with a suc
 
     <table table-name="users" class-name="User"/>
 
-    <type-override column-name="" sql-type="DATETIME" java-type="Instant"/>
+    <type-override
+            column-name=""
+            sql-type="DATETIME"
+            java-type="Instant"/>
 
-    <generator generate="true" type="entity" sub-package="entity" output-dir="../src/main/java"/>
-    <generator generate="true" type="repository" sub-package="repository" output-dir="../src/main/java"/>
-    <generator generate="true" type="dto" sub-package="dto" output-dir="../src/main/java"/>
-    <generator generate="true" type="dto-create" sub-package="dto" output-dir="../src/main/java"/>
-    <generator generate="true" type="dto-update" sub-package="dto" output-dir="../src/main/java"/>
-    <generator generate="true" type="dto-response" sub-package="dto" output-dir="../src/main/java"/>
-    <generator generate="true" type="dto-request" sub-package="dto" output-dir="../src/main/java"/>
-    <generator generate="true" type="mapper" sub-package="mapper" output-dir="../src/main/java"/>
-    <generator generate="true" type="service" sub-package="service" output-dir="../src/main/java"/>
-    <generator generate="true" type="service-impl" sub-package="service.impl" output-dir="../src/main/java"/>
-    <generator generate="true" type="controller" sub-package="controller" output-dir="../src/main/java"/>
-    <generator generate="true" type="spec-builder" sub-package="shared" output-dir="../src/main/java"/>
+    <generator
+            generate="true"
+            type="entity"
+            sub-package="entity"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="repository"
+            sub-package="repository"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="dto"
+            sub-package="dto"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="dto-create"
+            sub-package="dto"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="dto-update"
+            sub-package="dto"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="dto-response"
+            sub-package="dto"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="dto-request"
+            sub-package="dto"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="mapper"
+            sub-package="mapper"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="service"
+            sub-package="service"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="service-impl"
+            sub-package="service.impl"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="controller"
+            sub-package="controller"
+            output-dir="../src/main/java"/>
+
+    <generator
+            generate="true"
+            type="spec-builder"
+            sub-package="shared"
+            output-dir="../src/main/java"/>
+
 </db2spring>
 ```
+
+---
+
+##  Quick Start
+
+For a Maven project with `db2spring-config.xml` in the project root:
+
+```bash
+mvn db2spring:generate
+```
+
+For a custom configuration file:
+
+```bash
+mvn db2spring:generate -Ddb2spring.config=my-db2spring-config.xml
+```
+
+That's it. db2spring will connect to the configured database, inspect the schema, and generate the configured Spring
+Boot components.
