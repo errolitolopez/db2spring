@@ -64,7 +64,7 @@ Add the following plugin to your project's `pom.xml`:
         <plugin>
             <groupId>io.github.errolitolopez</groupId>
             <artifactId>db2spring-maven-plugin</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </plugin>
     </plugins>
 </build>

@@ -11,7 +11,7 @@
 
     <groupId>${projectInfo.groupId}</groupId>
 	<artifactId>${projectInfo.artifactId}</artifactId>
-	<version>v1.0.0</version>
+	<version>v1.1.0</version>
 	<name>${projectInfo.artifactId}</name>
 	<description>Demo project for Spring Boot</description>
 
