@@ -15,7 +15,7 @@ mvn db2spring:generate
 
 ---
 
-##  Features
+## Features
 
 - **Database Support:** Load schema information from a live database connection using JDBC or directly from SQL
   `CREATE TABLE` statements.
@@ -33,7 +33,7 @@ mvn db2spring:generate
 
 ---
 
-##  Module Structure
+## Module Structure
 
 The project is structured as a multi-module Maven project:
 
@@ -64,7 +64,7 @@ Add the following plugin to your project's `pom.xml`:
         <plugin>
             <groupId>io.github.errolitolopez</groupId>
             <artifactId>db2spring-maven-plugin</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0</version>
         </plugin>
     </plugins>
 </build>
@@ -130,118 +130,56 @@ Example output:
 
 ---
 
-##  Sample `db2spring-config.xml`
+## Sample `db2spring-config.xml`
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <db2spring>
+  <database-connection>
+    <url>jdbc:postgresql://localhost:5432/sample_schema</url>
+    <user>postgres</user>
+    <password>password</password>
+    <driver-class>org.postgresql.Driver</driver-class>
+    <driver-jar>postgresql-42.7.12.jar</driver-jar>
+  </database-connection>
 
-    <database-connection>
-        <url>jdbc:postgresql://localhost:5432/sample_schema</url>
-        <user>postgres</user>
-        <password>password</password>
-        <driver-class>org.postgresql.Driver</driver-class>
-        <driver-jar>path/postgresql-42.7.12.jar</driver-jar>
-    </database-connection>
+  <project-info>
+    <group-id>com.exist.energy</group-id>
+    <artifact-id>myapi</artifact-id>
+    <project-name>myapi</project-name>
+  </project-info>
 
-    <!--    <sql-file src="path/to/your/file.sql"/>-->
-    <!--    <sql>sql create statement</sql>-->
+  <plugin name="SpringBootStarterValidation"/>
+  <plugin name="Lombok"/>
+  <plugin name="Mapstruct"/>
 
-    <project-info>
-        <group-id>com.example</group-id>
-        <artifact-id>my-api</artifact-id>
-        <project-name>my-api</project-name>
-    </project-info>
+  <table table-name="app_user" class-name="AppUser"/>
 
-    <plugin name="SpringBootStarterValidation"/>
-    <plugin name="Lombok"/>
-    <plugin name="Mapstruct"/>
+  <type-override column-name="" sql-type="DATETIME" java-type="Instant"/>
 
-    <table table-name="users" class-name="User"/>
+  <file-structure>layeredDto</file-structure>
 
-    <type-override
-            column-name=""
-            sql-type="DATETIME"
-            java-type="Instant"/>
-
-    <generator
-            generate="true"
-            type="entity"
-            sub-package="entity"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="repository"
-            sub-package="repository"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="dto"
-            sub-package="dto"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="dto-create"
-            sub-package="dto"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="dto-update"
-            sub-package="dto"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="dto-response"
-            sub-package="dto"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="dto-request"
-            sub-package="dto"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="mapper"
-            sub-package="mapper"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="service"
-            sub-package="service"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="service-impl"
-            sub-package="service.impl"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="controller"
-            sub-package="controller"
-            output-dir="../src/main/java"/>
-
-    <generator
-            generate="true"
-            type="spec-builder"
-            sub-package="shared"
-            output-dir="../src/main/java"/>
-
+  <generator generate="true" type="entity" sub-package="domain" output-dir="src/main/java"/>
+  <generator generate="true" type="repository" sub-package="repository" output-dir="src/main/java"/>
+  <generator generate="true" type="dto" sub-package="dto" output-dir="src/main/java"/>
+  <generator generate="true" type="dto-create" sub-package="dto" output-dir="src/main/java"/>
+  <generator generate="true" type="dto-update" sub-package="dto" output-dir="src/main/java"/>
+  <generator generate="true" type="dto-response" sub-package="dto" output-dir="src/main/java" suffix="ResponseDto"/>
+  <generator generate="true" type="dto-request" sub-package="dto" output-dir="src/main/java" suffix="FilterDto"/>
+  <generator generate="true" type="mapper" sub-package="service.mapper" output-dir="src/main/java"/>
+  <generator generate="true" type="service" sub-package="service" output-dir="src/main/java"/>
+  <generator generate="true" type="controller" sub-package="web.rest" output-dir="src/main/java" suffix="Resource"/>
+  <generator generate="true" type="spec-builder" sub-package="shared" output-dir="src/main/java"/>
+  <generator generate="true" type="test-setup" sub-package="data" output-dir="src/test/java"/>
+  <generator generate="true" type="test-service" sub-package="service" output-dir="src/test/java"/>
+  <generator generate="true" type="test-controller" sub-package="web.rest" output-dir="src/test/java"/>
+  <generator generate="true" type="adoc" sub-package="" output-dir="src/asciidoc"/>
 </db2spring>
 ```
 
 ---
 
-##  Quick Start
+## Quick Start
 
 For a Maven project with `db2spring-config.xml` in the project root:
 
