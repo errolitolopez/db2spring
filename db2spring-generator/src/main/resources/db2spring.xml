@@ -37,7 +37,6 @@
     <generator generate="true" type="dto-request" sub-package="dto" output-dir="src/main/java"/>
     <generator generate="true" type="mapper" sub-package="mapper" output-dir="src/main/java"/>
     <generator generate="true" type="service" sub-package="service" output-dir="src/main/java"/>
-    <generator generate="true" type="service-impl" sub-package="service.impl" output-dir="src/main/java"/>
     <generator generate="true" type="controller" sub-package="controller" output-dir="src/main/java"/>
     <generator generate="false" type="spec-builder" sub-package="shared" output-dir="src/main/java"/>
 </db2spring>

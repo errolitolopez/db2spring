@@ -1,6 +1,6 @@
 package com.errol.db2spring.model.table;
 
-import com.errol.db2spring.model.SmartString;
+import io.github.uncaughterrol.smartstring.SmartString;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +17,7 @@ public class Column {
     private boolean nullable;
     private boolean primaryKey;
     private boolean date;
+    private String jsonFieldType;
 
     public SmartString getSmartColumnName() {
         return new SmartString(columnName).toCamelCase();

@@ -3,9 +3,9 @@ package com.errol.db2spring.cli;
 import com.errol.db2spring.model.Db2springXml;
 import com.errol.db2spring.model.TableMapping;
 import com.errol.db2spring.model.table.Table;
-import com.errol.db2spring.model.SmartString;
 import com.errol.db2spring.utils.codegen.GeneratorPropertyUtil;
 import com.errol.db2spring.utils.collection.CollectionUtil;
+import io.github.uncaughterrol.smartstring.SmartString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class TableMappingResolver {
             String tableName = table.getTableName();
             if (!existing.contains(tableName)) {
                 // Default class name generation
-                String className = SmartString.of(tableName).toPascalCase().toSingular().get();
+                String className = SmartString.of(tableName).toPascalCase().toSingular().value();
                 TableMapping newMapping = new TableMapping(tableName, className, generators);
                 finalMappings.add(newMapping);
             }

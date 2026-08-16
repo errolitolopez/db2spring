@@ -63,6 +63,7 @@ public class ColumnUtil {
         column.setJavaType(resolveJavaType(typeOverrides, javaType, sqlType));
         column.setDate(isDate(javaType));
         column.setSize(resolveDefaultSize(column.getSize(), sqlType));
+        column.setJsonFieldType(DataTypeMapper.getJsonFieldType(sqlType));
         return column;
     }
 

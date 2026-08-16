@@ -108,4 +108,28 @@ public final class DataTypeMapper {
         if (dbType == null || dbType.isBlank()) return JAVA_OBJECT;
         return TYPE_MAP.getOrDefault(dbType.trim().toUpperCase(), JAVA_OBJECT);
     }
+
+    public static String getJsonFieldType(String dbType) {
+        String javaType = getJavaType(dbType);
+
+        if (javaType.endsWith("[]")) {
+            return "ARRAY";
+        }
+
+        switch (javaType) {
+            case "Boolean":
+                return "BOOLEAN";
+            case "Short":
+            case "Integer":
+            case "Long":
+            case "Float":
+            case "Double":
+            case "BigDecimal":
+                return "NUMBER";
+            case "Object":
+                return "VARIES";
+            default:
+                return "STRING";
+        }
+    }
 }

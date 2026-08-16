@@ -13,6 +13,7 @@ import com.errol.db2spring.utils.collection.CollectionUtil;
 import com.errol.db2spring.writer.Db2springFileWriter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -47,7 +48,9 @@ public class Db2springRunner {
 
             // 2. Execute Generation
             Db2springGenerator db2SpringGenerator = new Db2springGenerator();
-            List<FileModel> files = db2SpringGenerator.generateJavaFiles(tables, property);
+            List<FileModel> files = new ArrayList<>();
+            files.addAll(db2SpringGenerator.generateJavaFiles(tables, property));
+            files.addAll(db2SpringGenerator.generateAdocFiles(tables, property));
 
             // 3. Write Files
             writeGeneratedFiles(files, generates);

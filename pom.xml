@@ -8,7 +8,7 @@
 
     <groupId>io.github.errolitolopez</groupId>
     <artifactId>db2spring</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <packaging>pom</packaging>
 
     <name>db2spring</name>
@@ -74,6 +74,12 @@
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker</artifactId>
                 <version>${freemarker.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.uncaughterrol</groupId>
+                <artifactId>smartstring</artifactId>
+                <version>0.2.0</version>
             </dependency>
 
         </dependencies>

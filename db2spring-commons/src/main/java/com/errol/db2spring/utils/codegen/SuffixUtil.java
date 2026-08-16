@@ -44,6 +44,12 @@ public class SuffixUtil {
                 return "ServiceImpl";
             case "spec-builder":
                 return "SpecBuilder";
+            case "test-setup":
+                return "DataSetup";
+            case "test-service":
+                return "ServiceIT";
+            case "test-controller":
+                return "ResourceIT";
             default:
                 return "";
         }

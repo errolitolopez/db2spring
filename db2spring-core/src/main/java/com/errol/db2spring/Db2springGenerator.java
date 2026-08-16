@@ -8,13 +8,11 @@ import com.errol.db2spring.exception.Db2springException;
 import com.errol.db2spring.model.FileModel;
 import com.errol.db2spring.model.GeneratorProperty;
 import com.errol.db2spring.model.ProjectInfo;
-import com.errol.db2spring.model.SmartString;
 import com.errol.db2spring.model.TableMapping;
 import com.errol.db2spring.model.plugin.Plugin;
 import com.errol.db2spring.model.table.Column;
 import com.errol.db2spring.model.table.Table;
 import com.errol.db2spring.sql.SqlParser;
-import com.errol.db2spring.utils.SmartStringUtil;
 import com.errol.db2spring.utils.StringUtil;
 import com.errol.db2spring.utils.codegen.ColumnUtil;
 import com.errol.db2spring.utils.codegen.ImportUtil;
@@ -24,6 +22,8 @@ import com.errol.db2spring.utils.codegen.SuffixUtil;
 import com.errol.db2spring.utils.collection.CollectionUtil;
 import com.errol.db2spring.utils.collection.MapUtil;
 import com.errol.db2spring.writer.FreeMarkerWriter;
+import io.github.uncaughterrol.smartstring.SmartString;
+import io.github.uncaughterrol.smartstring.SmartStringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -46,8 +46,6 @@ public class Db2springGenerator {
         }
 
         final List<Table> tables = SqlParser.getTables(sql);
-
-        List<FileModel> configurationFiles = generateConfigurationFiles(property);
 
         return generateJavaFiles(tables, property);
     }
@@ -106,7 +104,7 @@ public class Db2springGenerator {
             SmartString smartTableName = new SmartString(tableName);
             data.put("tableName", smartTableName);
             data.put("className", new SmartString(className));
-            data.put("apiName", smartTableName.get().endsWith("s") ? smartTableName : smartTableName.toPlural());
+            data.put("apiName", toPlural(smartTableName.toKebabCase().value()));
 
             TableDataContext tableDataContext = new TableDataContext()
                     .setTableName(tableName)
@@ -131,9 +129,13 @@ public class Db2springGenerator {
                     continue;
                 }
 
+                if (type.equals("adoc")) {
+                    continue;
+                }
+
                 if (type.equals("spec-builder")) isSpecBuilderGenerated = true;
 
-                String typePascal = SmartStringUtil.toPascalCase(type);
+                String typePascal = SmartStringUtils.toPascalCase(type);
                 String subPackage = data.get("subPackage" + typePascal).toString();
                 String filename = data.get("className" + typePascal).toString();
 
@@ -189,6 +191,37 @@ public class Db2springGenerator {
         return fileModels;
     }
 
+    public List<FileModel> generateAdocFiles(List<Table> tables, Db2springProperty property) {
+        List<FileModel> fileModels = new ArrayList<>();
+        String outputDir = CollectionUtil.findFirstAndMap(
+                property.getGeneratorProperties(),
+                GeneratorProperty::getOutputDir,
+                g -> g.getType().equals("adoc")
+        ).orElse("src/asciidoc");
+
+        for (Table table : tables) {
+            Map<String, TableMapping> tableMappingMap = MapUtil
+                    .toMap(property.getTableMappings(), TableMapping::getTableName);
+
+            String tableName = table.getTableName();
+
+            SmartString smartTableName = new SmartString(tableName);
+
+            Map<String, Object> data = Map.of(
+                    "className", smartTableName,
+                    "apiName", toPlural(smartTableName.toKebabCase().value())
+            );
+
+            fileModels.add(new FileModel()
+                    .setOutputDir(outputDir)
+                    .setType("adoc")
+                    .setFileExtension("adoc")
+                    .setFilename(smartTableName.toKebabCase().value())
+                    .setContent(writer.writeContent(data, "adoc")));
+        }
+        return fileModels;
+    }
+
     private static String resolveSubPackage(SubPackageContext context) {
         String fileStructure = context.getFileStructure();
         String type = context.getType();
@@ -217,10 +250,9 @@ public class Db2springGenerator {
     }
 
     public List<FileModel> generateConfigurationFiles(Db2springProperty property) {
-        List<FileModel> fileModels = new ArrayList<>();
         final ProjectInfo projectInfo = property.getProjectInfo();
 
-        String projectName = SmartStringUtil.toKebabCase(ProjectInfoUtil.getProjectName(projectInfo));
+        String projectName = SmartStringUtils.toKebabCase(ProjectInfoUtil.getProjectName(projectInfo));
         Map<String, Object> appPropsData = Map.of("projectName", projectName);
 
         Map<String, Object> pomData = new HashMap<>(Map.of(
@@ -249,7 +281,7 @@ public class Db2springGenerator {
 
     public FileModel generateMainApplicationFile(ProjectInfo projectInfo) {
         String rootPackage = ProjectInfoUtil.getRootPackage(projectInfo);
-        String className = SmartStringUtil.toPascalCase(ProjectInfoUtil.getProjectName(projectInfo) + "Application");
+        String className = SmartStringUtils.toPascalCase(ProjectInfoUtil.getProjectName(projectInfo) + "Application");
         Map<String, Object> data = Map.of("rootPackage", rootPackage, "className", className);
 
         return new FileModel()
@@ -306,7 +338,7 @@ public class Db2springGenerator {
                     .findFirst(context.getGeneratorProperties(), g -> g.getType().equals(type))
                     .get();
 
-            final String typePascal = SmartStringUtil.toPascalCase(type);
+            final String typePascal = SmartStringUtils.toPascalCase(type);
 
             String subPackage = PackageUtil.resolveDefaultIfEmpty(generatorProperty.getSubPackage(), type);
 
@@ -341,5 +373,16 @@ public class Db2springGenerator {
             // package e.g. [(key=suffixDto, value=UserDto)]
             data.putIfAbsent("suffix" + typePascal, new SmartString(SuffixUtil.resolveFinalSuffix(type, suffix)));
         });
+    }
+
+    public SmartString toPlural(String kebab) {
+        int lastDash = kebab.lastIndexOf('-');
+
+        String prefix = lastDash >= 0 ? kebab.substring(0, lastDash + 1) : "";
+        String lastWord = lastDash >= 0 ? kebab.substring(lastDash + 1) : kebab;
+
+        SmartString pluralizedLastWord = SmartString.of(lastWord).toPlural();
+
+        return SmartString.of(prefix + pluralizedLastWord.value());
     }
 }

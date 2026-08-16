@@ -56,7 +56,8 @@ public final class SqlParser {
                     SqlUtil.getSize(columnDef),
                     nullable,
                     primaryKey,
-                    false
+                    false,
+                    null
             ));
         }
 

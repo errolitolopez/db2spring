@@ -43,7 +43,7 @@ public class Db2springAppRunner {
 
         } catch (Exception e) {
 //            e.printStackTrace();
-            CliLogger.logErrorAndExit("Failed to run generator: " + e.getMessage());
+            CliLogger.logErrorAndExit("Failed to run generator: " + e.getCause().getMessage());
         }
     }
 

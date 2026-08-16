@@ -66,7 +66,7 @@ public class DatabaseLoader {
                 // check PK
                 boolean primary = isPrimaryKey(meta, tableName, columnName);
 
-                Column column = new Column(columnName, sqlType, null, size, nullable, primary, false);
+                Column column = new Column(columnName, sqlType, null, size, nullable, primary, false, null);
                 columns.add(column);
             }
         }

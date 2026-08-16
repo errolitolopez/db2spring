@@ -17,7 +17,6 @@ public class ImportUtil {
 
     public static final Map<String, List<String>> REQUIRED_IMPORTS_MAP = Map.of(
             "controller", List.of(
-                    "Dto",
                     "DtoCreate",
                     "DtoRequest",
                     "DtoResponse",
@@ -25,7 +24,6 @@ public class ImportUtil {
                     "Service"
             ),
             "service", List.of(
-                    "Dto",
                     "DtoCreate",
                     "DtoRequest",
                     "DtoResponse",
@@ -36,7 +34,6 @@ public class ImportUtil {
                     "SpecBuilder"
             ),
             "service-impl", List.of(
-                    "Dto",
                     "DtoCreate",
                     "DtoRequest",
                     "DtoResponse",
@@ -56,7 +53,23 @@ public class ImportUtil {
             ),
             "repository", List.of(
                     "Entity"
+            ),
+            "test-setup", List.of(
+                    "Repository",
+                    "Entity"
+            ),
+            "test-service", List.of(
+                    "Service",
+                    "TestSetup"
+            ),
+            "test-controller", List.of(
+                    "TestSetup",
+                    "DtoCreate",
+                    "DtoUpdate",
+                    "Mapper",
+                    "Entity"
             )
+
     );
 
     public static List<String> getRequiredImports(String type) {

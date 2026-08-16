@@ -25,7 +25,11 @@ public class GeneratorPropertyUtil {
             "mapper",
             "repository",
             "service",
-            "spec-builder"
+            "spec-builder",
+            "test-setup",
+            "test-service",
+            "test-controller",
+            "adoc"
     );
 
     public static <T> Optional<GeneratorProperty> findBy(

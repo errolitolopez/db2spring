@@ -29,6 +29,7 @@ public class PackageUtil {
             case "repository":
                 return "repository";
             case "service":
+            case "test-service":
                 return "service";
             case "service-impl":
                 return "service.impl";
@@ -36,6 +37,8 @@ public class PackageUtil {
                 return "shared";
             case "entity":
                 return "entity";
+            case "test-setup":
+                return "data";
             default:
                 return "";
         }
